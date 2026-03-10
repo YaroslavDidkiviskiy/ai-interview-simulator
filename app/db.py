@@ -11,14 +11,14 @@ class Base(DeclarativeBase):
 
 
 engine = create_engine(
-    settings.database_url
-    echo=settings.debug
+    settings.database_url,
+    echo=settings.debug,
 )
 
 SessionLocal = sessionmaker(
     bind=engine,
     autoflush=False,
-    autocommit=False
+    autocommit=False,
 )
 
 def get_db():
