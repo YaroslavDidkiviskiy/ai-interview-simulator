@@ -1,0 +1,114 @@
+[
+    {
+      "role": "python_backend",
+      "level": "junior",
+      "interview_type": "technical",
+      "topic": "python",
+      "difficulty": 1,
+      "question": "What is the difference between a list and a tuple in Python?"
+    },
+    {
+      "role": "python_backend",
+      "level": "junior",
+      "interview_type": "technical",
+      "topic": "python",
+      "difficulty": 1,
+      "question": "What is the difference between == and is in Python?"
+    },
+    {
+      "role": "python_backend",
+      "level": "junior",
+      "interview_type": "technical",
+      "topic": "oop",
+      "difficulty": 2,
+      "question": "What is encapsulation in object-oriented programming?"
+    },
+    {
+      "role": "python_backend",
+      "level": "junior",
+      "interview_type": "technical",
+      "topic": "sql",
+      "difficulty": 1,
+      "question": "What is a primary key in a database?"
+    },
+    {
+      "role": "python_backend",
+      "level": "junior",
+      "interview_type": "technical",
+      "topic": "sql",
+      "difficulty": 2,
+      "question": "What is the difference between INNER JOIN and LEFT JOIN?"
+    },
+    {
+      "role": "python_backend",
+      "level": "junior",
+      "interview_type": "technical",
+      "topic": "django",
+      "difficulty": 2,
+      "question": "What is the role of models in Django?"
+    },
+    {
+      "role": "python_backend",
+      "level": "junior",
+      "interview_type": "technical",
+      "topic": "drf",
+      "difficulty": 2,
+      "question": "What are serializers in Django REST Framework used for?"
+    },
+    {
+      "role": "python_backend",
+      "level": "junior",
+      "interview_type": "technical",
+      "topic": "fastapi",
+      "difficulty": 2,
+      "question": "What is dependency injection in FastAPI?"
+    },
+    {
+      "role": "python_backend",
+      "level": "junior",
+      "interview_type": "technical",
+      "topic": "docker",
+      "difficulty": 1,
+      "question": "Why do developers use Docker?"
+    },
+    {
+      "role": "python_backend",
+      "level": "junior",
+      "interview_type": "technical",
+      "topic": "rest",
+      "difficulty": 1,
+      "question": "What is REST API?"
+    },
+    {
+      "role": "python_backend",
+      "level": "junior",
+      "interview_type": "hr",
+      "topic": "hr",
+      "difficulty": 1,
+      "question": "Tell me about yourself."
+    },
+    {
+      "role": "python_backend",
+      "level": "junior",
+      "interview_type": "hr",
+      "topic": "hr",
+      "difficulty": 1,
+      "question": "Why are you looking for a new job?"
+    },
+    {
+      "role": "python_backend",
+      "level": "junior",
+      "interview_type": "mixed",
+      "topic": "python",
+      "difficulty": 1,
+      "question": "What is the difference between a list and a tuple in Python?"
+    },
+    {
+      "role": "python_backend",
+      "level": "junior",
+      "interview_type": "mixed",
+      "topic": "hr",
+      "difficulty": 1,
+      "question": "Tell me about yourself."
+    }
+]
