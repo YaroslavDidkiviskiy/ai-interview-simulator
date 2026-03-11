@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Column, DateTime, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -9,7 +10,8 @@ if TYPE_CHECKING:
     from app.models.question import Question
     from app.models.answer import Answer
 
-class InteviewSession(Base):
+
+class InterviewSession(Base):
     __tablename__ = "interview_sessions"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)

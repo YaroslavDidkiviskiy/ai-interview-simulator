@@ -10,7 +10,7 @@ from app.db import Base
 if TYPE_CHECKING:
     from app.models.answer import Answer
     from app.models.feedback import Feedback
-    from app.models.session import InteviewSession
+    from app.models.session import InterviewSession
 
 
 class Question(Base):
