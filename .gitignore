@@ -51,3 +51,9 @@ Thumbs.db
 # Cursor / editor meta
 .cursor/
 
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
+
