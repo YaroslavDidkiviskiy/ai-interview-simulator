@@ -1,20 +1,6 @@
-"""Answer schemas."""
-
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
-class AnswerBase(BaseModel):
-    content: str
-
-
-class AnswerCreate(AnswerBase):
+class AnswerCreateSchema(BaseModel):
     question_id: int
-
-
-class AnswerRead(AnswerBase):
-    id: int
-    question_id: int
-
-    class Config:
-        orm_mode = True
-
+    text: str = Field(..., min_length=1, max_length=5000)
