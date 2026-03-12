@@ -9,6 +9,7 @@ from app.db import Base
 if TYPE_CHECKING:
     from app.models.question import Question
     from app.models.answer import Answer
+    from app.models.feedback import Feedback
 
 
 class InterviewSession(Base):
@@ -34,6 +35,10 @@ class InterviewSession(Base):
         cascade="all, delete-orphan"
     )
     answers: Mapped[list["Answer"]] = relationship(
+        back_populates="session",
+        cascade="all, delete-orphan"
+    )
+    feedback_items: Mapped[list["Feedback"]] = relationship(
         back_populates="session",
         cascade="all, delete-orphan"
     )
