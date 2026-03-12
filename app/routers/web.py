@@ -1,15 +1,14 @@
-"""Web routes rendering HTML templates."""
-
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-
-router = APIRouter()
+router = APIRouter(tags=["web"])
 templates = Jinja2Templates(directory="app/templates")
 
 
-@router.get("/", response_class=HTMLResponse)
-async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
-
+@router.get("/")
+def home(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={},
+    )
