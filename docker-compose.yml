@@ -20,7 +20,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/ai_interview_simulator
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/ai_interview_simulator
       DEBUG: "false"
       APP_NAME: AI Interview Simulator
       EVALUATOR_PROVIDER: fallback
@@ -29,6 +29,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - app
 
   # Right now optional
   # ollama:
