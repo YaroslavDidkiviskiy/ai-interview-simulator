@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Layout from '../components/Layout'
-import { getSession, Question, SessionDetail } from '../api/client'
+import { getSession, Question, SessionDetail, submitAnswer } from '../api/client'
 
 function DifficultyBadge({ level }: { level: number }) {
   const styles: Record<number, string> = {
@@ -26,19 +26,17 @@ function TopicBadge({ topic }: { topic: string }) {
   )
 }
 
-function QuestionCard({ question, index }: { question: Question; index: number }) {
+function StatusBadge({ status }: { status: string | null }) {
+  const s = status ?? 'unknown'
+  const styles: Record<string, string> = {
+    active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+    completed: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+    unknown: 'bg-slate-700/50 text-slate-400 border-slate-700',
+  }
   return (
-    <div className="p-6 rounded-2xl bg-gradient-to-br from-indigo-950/50 to-slate-900 border border-indigo-500/30 shadow-xl shadow-indigo-500/5">
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest">
-          Question {index + 1}
-        </span>
-        <span className="text-slate-700">·</span>
-        <TopicBadge topic={question.topic} />
-        <DifficultyBadge level={question.difficulty} />
-      </div>
-      <p className="text-xl text-slate-100 leading-relaxed font-medium">{question.text}</p>
-    </div>
+    <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${styles[s] ?? styles.unknown}`}>
+      {s}
+    </span>
   )
 }
 
@@ -88,31 +86,50 @@ function QuestionListItem({
   )
 }
 
-function StatusBadge({ status }: { status: string | null }) {
-  const s = status ?? 'unknown'
-  const styles: Record<string, string> = {
-    active: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    completed: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    unknown: 'bg-slate-700/50 text-slate-400 border-slate-700',
-  }
-  return (
-    <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${styles[s] ?? styles.unknown}`}>
-      {s}
-    </span>
-  )
-}
-
 export default function SessionDetailPage() {
   const { sessionId } = useParams<{ sessionId: string }>()
   const [session, setSession] = useState<SessionDetail | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [answer, setAnswer] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  useEffect(() => {
+  const fetchSession = useCallback(() => {
     if (!sessionId) return
     getSession(Number(sessionId))
       .then(setSession)
       .catch(() => setError('Session not found'))
   }, [sessionId])
+
+  useEffect(() => {
+    fetchSession()
+  }, [fetchSession])
+
+  useEffect(() => {
+    if (session?.status === 'active') {
+      setAnswer('')
+      textareaRef.current?.focus()
+    }
+  }, [session?.current_question_index, session?.status])
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!session?.current_question || !answer.trim()) return
+    setSubmitError(null)
+    setSubmitting(true)
+    try {
+      await submitAnswer(Number(sessionId), {
+        question_id: session.current_question.id,
+        text: answer.trim(),
+      })
+      fetchSession()
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Something went wrong')
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   if (error) {
     return (
@@ -141,11 +158,15 @@ export default function SessionDetailPage() {
     )
   }
 
-  const progress = Math.round(((session.current_question_index + 1) / session.total_questions) * 100)
+  const isCompleted = session.status === 'completed'
+  const progress = Math.round(
+    (isCompleted ? session.total_questions : session.current_question_index) /
+    session.total_questions * 100
+  )
 
   return (
     <Layout>
-      {/* Session header */}
+      {/* Header */}
       <div className="flex items-start justify-between mb-8">
         <div>
           <div className="flex items-center gap-2 text-sm text-slate-400 mb-1">
@@ -166,12 +187,12 @@ export default function SessionDetailPage() {
         <StatusBadge status={session.status} />
       </div>
 
-      {/* Progress bar */}
+      {/* Progress */}
       <div className="mb-8">
         <div className="flex justify-between items-center text-sm mb-2">
           <span className="text-slate-400 font-medium">Progress</span>
           <span className="text-slate-300 tabular-nums font-semibold">
-            {session.current_question_index + 1} / {session.total_questions}
+            {isCompleted ? session.total_questions : session.current_question_index} / {session.total_questions}
           </span>
         </div>
         <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
@@ -185,7 +206,7 @@ export default function SessionDetailPage() {
             <div
               key={i}
               className={`flex-1 h-1 rounded-full transition-all ${
-                i < session.current_question_index
+                i < session.current_question_index || isCompleted
                   ? 'bg-indigo-500'
                   : i === session.current_question_index
                   ? 'bg-violet-500'
@@ -196,16 +217,81 @@ export default function SessionDetailPage() {
         </div>
       </div>
 
-      {/* Current question */}
-      <div className="mb-8">
-        {session.current_question ? (
-          <QuestionCard question={session.current_question} index={session.current_question_index} />
-        ) : (
-          <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 text-slate-400 text-center">
-            No current question available.
-          </div>
-        )}
-      </div>
+      {/* Completed state */}
+      {isCompleted ? (
+        <div className="mb-8 p-8 rounded-2xl bg-gradient-to-br from-emerald-950/40 to-slate-900 border border-emerald-500/20 text-center">
+          <div className="text-4xl mb-3">🎉</div>
+          <h2 className="text-xl font-bold text-emerald-400 mb-2">Interview Complete!</h2>
+          <p className="text-slate-400 mb-6">You've answered all {session.total_questions} questions.</p>
+          <Link to="/" className="btn-primary">
+            Start New Session
+          </Link>
+        </div>
+      ) : (
+        <>
+          {/* Current question */}
+          {session.current_question && (
+            <div className="mb-5 p-6 rounded-2xl bg-gradient-to-br from-indigo-950/50 to-slate-900 border border-indigo-500/30 shadow-xl shadow-indigo-500/5">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest">
+                  Question {session.current_question_index + 1} of {session.total_questions}
+                </span>
+                <span className="text-slate-700">·</span>
+                <TopicBadge topic={session.current_question.topic} />
+                <DifficultyBadge level={session.current_question.difficulty} />
+              </div>
+              <p className="text-xl text-slate-100 leading-relaxed font-medium">
+                {session.current_question.text}
+              </p>
+            </div>
+          )}
+
+          {/* Answer form */}
+          <form onSubmit={handleSubmit} className="mb-8">
+            <textarea
+              ref={textareaRef}
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              placeholder="Type your answer here…"
+              rows={6}
+              className="input-base resize-none mb-3 leading-relaxed"
+              disabled={submitting}
+            />
+            {submitError && (
+              <p className="text-red-400 text-sm mb-3 flex items-center gap-1">
+                <span>⚠️</span> {submitError}
+              </p>
+            )}
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-slate-500 tabular-nums">
+                {answer.trim().length} / 5000
+              </span>
+              <button
+                type="submit"
+                disabled={submitting || !answer.trim()}
+                className="btn-primary"
+              >
+                {submitting ? (
+                  <>
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                    </svg>
+                    Submitting…
+                  </>
+                ) : (
+                  <>
+                    Submit Answer
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        </>
+      )}
 
       {/* All questions list */}
       {session.questions.length > 0 && (

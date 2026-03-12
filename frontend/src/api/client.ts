@@ -46,10 +46,25 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json()
 }
 
+export interface SubmitAnswerPayload {
+  question_id: number
+  text: string
+}
+
+export interface SubmitAnswerResponse {
+  answer_id: number
+  session_status: string
+  current_question_index: number
+}
+
 export function createSession(data: CreateSessionPayload): Promise<Session> {
   return request('/sessions/', { method: 'POST', body: JSON.stringify(data) })
 }
 
 export function getSession(id: number): Promise<SessionDetail> {
   return request(`/sessions/${id}`)
+}
+
+export function submitAnswer(sessionId: number, data: SubmitAnswerPayload): Promise<SubmitAnswerResponse> {
+  return request(`/sessions/${sessionId}/answers/`, { method: 'POST', body: JSON.stringify(data) })
 }
