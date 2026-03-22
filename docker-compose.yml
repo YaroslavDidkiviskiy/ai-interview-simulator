@@ -14,6 +14,28 @@ services:
       interval: 3s
       timeout: 3s
       retries: 5
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ollama-init:
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    volumes:
+      - ollama_data:/root/.ollama
+    entrypoint: ["ollama", "pull", "llama3.2:3b"]
+    environment:
+      OLLAMA_HOST: http://ollama:11434
 
   app:
     build: .
@@ -23,12 +45,14 @@ services:
       DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/ai_interview_simulator
       DEBUG: "false"
       APP_NAME: AI Interview Simulator
-      EVALUATOR_PROVIDER: fallback
+      EVALUATOR_PROVIDER: ollama
       OLLAMA_BASE_URL: http://ollama:11434
       OLLAMA_MODEL: llama3.2:3b
     depends_on:
       db:
         condition: service_healthy
+      ollama-init:
+        condition: service_completed_successfully
 
   frontend:
     build: ./frontend
@@ -37,14 +61,6 @@ services:
     depends_on:
       - app
 
-  # Right now optional
-  # ollama:
-  #   image: ollama/ollama:latest
-  #   ports:
-  #     - "11434:11434"
-  #   volumes:
-  #     - ollama_data:/root/.ollama
-
 volumes:
   pgdata: {}
-  # ollama_data: {}
+  ollama_data: {}
