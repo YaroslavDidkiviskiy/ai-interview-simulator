@@ -1,7 +1,29 @@
 import json
+import re
 
 from app.services.evaluators.base import BaseEvaluator
 from app.services.llm.ollama_client import OllamaClient
+
+
+def _parse_evaluator_json(raw: str) -> dict:
+    s = raw.strip().lstrip("\ufeff")
+    fence = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", s, re.IGNORECASE)
+    if fence:
+        s = fence.group(1).strip()
+    try:
+        return json.loads(s)
+    except json.JSONDecodeError:
+        pass
+    start = s.find("{")
+    if start == -1:
+        raise ValueError(f"No JSON object in Ollama response: {raw[:500]!r}…")
+    try:
+        obj, _ = json.JSONDecoder().raw_decode(s[start:])
+        if isinstance(obj, dict):
+            return obj
+    except json.JSONDecodeError:
+        pass
+    raise ValueError(f"Failed to parse Ollama response as JSON: {raw[:800]}")
 
 
 class OllamaEvaluator(BaseEvaluator):
@@ -64,10 +86,4 @@ class OllamaEvaluator(BaseEvaluator):
         )
 
         raw_response = self.client.generate(prompt)
-
-        try:
-            parsed = json.loads(raw_response)
-        except json.JSONDecodeError as exc:
-            raise ValueError(f"Failed to parse Ollama response as JSON: {raw_response}") from exc
-
-        return parsed
+        return _parse_evaluator_json(raw_response)

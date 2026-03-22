@@ -16,6 +16,7 @@ class OllamaClient:
                 "model": self.model,
                 "messages": [{"role": "user", "content": prompt}],
                 "stream": False,
+                "format": "json",
             },
             timeout=120,
         )
