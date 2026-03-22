@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Layout from '../components/Layout'
-import { getSession, Question, SessionDetail, submitAnswer } from '../api/client'
+import {
+  FeedbackDto,
+  getSession,
+  Question,
+  SessionDetail,
+  submitAnswer,
+} from '../api/client'
 
 function DifficultyBadge({ level }: { level: number }) {
   const styles: Record<number, string> = {
@@ -93,6 +99,7 @@ export default function SessionDetailPage() {
   const [answer, setAnswer] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [lastFeedback, setLastFeedback] = useState<FeedbackDto | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const fetchSession = useCallback(() => {
@@ -119,10 +126,11 @@ export default function SessionDetailPage() {
     setSubmitError(null)
     setSubmitting(true)
     try {
-      await submitAnswer(Number(sessionId), {
+      const res = await submitAnswer(Number(sessionId), {
         question_id: session.current_question.id,
         text: answer.trim(),
       })
+      setLastFeedback(res.feedback)
       fetchSession()
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Something went wrong')
@@ -219,16 +227,75 @@ export default function SessionDetailPage() {
 
       {/* Completed state */}
       {isCompleted ? (
-        <div className="mb-8 p-8 rounded-2xl bg-gradient-to-br from-emerald-950/40 to-slate-900 border border-emerald-500/20 text-center">
-          <div className="text-4xl mb-3">🎉</div>
-          <h2 className="text-xl font-bold text-emerald-400 mb-2">Interview Complete!</h2>
-          <p className="text-slate-400 mb-6">You've answered all {session.total_questions} questions.</p>
-          <Link to="/" className="btn-primary">
-            Start New Session
-          </Link>
+        <div className="mb-8 space-y-6">
+          {lastFeedback && (
+            <div className="p-6 rounded-2xl bg-slate-900 border border-amber-500/25 text-left">
+              <h3 className="text-xs font-semibold text-amber-400/90 uppercase tracking-widest mb-3">
+                Last answer — feedback
+              </h3>
+              <p className="text-slate-200 leading-relaxed mb-3">{lastFeedback.feedback_text}</p>
+              <div className="flex flex-wrap gap-2 text-sm text-slate-400">
+                <span>Score <strong className="text-amber-200">{lastFeedback.score}/10</strong></span>
+              </div>
+            </div>
+          )}
+          <div className="p-8 rounded-2xl bg-gradient-to-br from-emerald-950/40 to-slate-900 border border-emerald-500/20 text-center">
+            <div className="text-4xl mb-3">🎉</div>
+            <h2 className="text-xl font-bold text-emerald-400 mb-2">Interview Complete!</h2>
+            <p className="text-slate-400 mb-6">You've answered all {session.total_questions} questions.</p>
+            <Link to="/" className="btn-primary">
+              Start New Session
+            </Link>
+          </div>
         </div>
       ) : (
         <>
+          {/* AI feedback for last submitted answer */}
+          {lastFeedback && (
+            <div className="mb-6 p-6 rounded-2xl bg-slate-900 border border-amber-500/25 shadow-lg shadow-amber-500/5">
+              <h3 className="text-xs font-semibold text-amber-400/90 uppercase tracking-widest mb-3">
+                Feedback on your last answer
+              </h3>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {[
+                  ['Overall', lastFeedback.score],
+                  ['Clarity', lastFeedback.clarity_score],
+                  ['Correct', lastFeedback.correctness_score],
+                  ['Confidence', lastFeedback.confidence_score],
+                ].map(([label, v]) => (
+                  <span
+                    key={label as string}
+                    className="px-3 py-1 rounded-lg bg-slate-800 text-slate-200 text-sm tabular-nums border border-slate-700"
+                  >
+                    <span className="text-slate-500 mr-1">{label}</span>
+                    <span className="font-semibold text-amber-200">{v}/10</span>
+                  </span>
+                ))}
+              </div>
+              <p className="text-slate-200 leading-relaxed mb-4">{lastFeedback.feedback_text}</p>
+              {lastFeedback.missing_points.length > 0 && (
+                <div className="mb-3">
+                  <p className="text-xs text-slate-500 uppercase mb-1">Missing</p>
+                  <ul className="list-disc list-inside text-slate-400 text-sm space-y-1">
+                    {lastFeedback.missing_points.map((p, i) => (
+                      <li key={i}>{p}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {lastFeedback.better_answer.length > 0 && (
+                <div>
+                  <p className="text-xs text-slate-500 uppercase mb-1">Stronger answer ideas</p>
+                  <ul className="list-disc list-inside text-slate-400 text-sm space-y-1">
+                    {lastFeedback.better_answer.map((p, i) => (
+                      <li key={i}>{p}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Current question */}
           {session.current_question && (
             <div className="mb-5 p-6 rounded-2xl bg-gradient-to-br from-indigo-950/50 to-slate-900 border border-indigo-500/30 shadow-xl shadow-indigo-500/5">

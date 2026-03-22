@@ -51,9 +51,26 @@ export interface SubmitAnswerPayload {
   text: string
 }
 
+export interface FeedbackDto {
+  id: number
+  session_id: number
+  question_id: number
+  answer_id: number
+  score: number
+  clarity_score: number
+  correctness_score: number
+  confidence_score: number
+  feedback_text: string
+  missing_points: string[]
+  better_answer: string[]
+  created_at: string
+}
+
 export interface SubmitAnswerResponse {
   answer_id: number
-  session_status: string
+  feedback_id: number
+  feedback: FeedbackDto
+  session_status: string | null
   current_question_index: number
 }
 
