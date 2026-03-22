@@ -3,8 +3,10 @@ from sqlalchemy.orm import Session
 from app.models.question import Question
 from app.models.session import InterviewSession
 from app.models.answer import Answer
+from app.models.feedback import Feedback
 from app.schemas.session import SessionCreateSchema
 from app.services.question_selector import QuestionSelector
+from app.services.evaluators.factory import get_evaluator
 
 
 class InterviewEngine:
@@ -55,14 +57,14 @@ class InterviewEngine:
         session_id: int,
         question_id: int,
         answer_text: str,
-    ) -> tuple[Answer, InterviewSession]:
+    ) -> tuple[Answer, Feedback, InterviewSession]:
         session_obj = db.get(InterviewSession, session_id)
         if session_obj is None:
             raise ValueError("Session not found")
 
         question = db.get(Question, question_id)
         if question is None or question.session_id != session_id:
-            raise ValueError("Question not found or not associated with this session")
+            raise ValueError("Question not found for this session")
 
         answer = Answer(
             session_id=session_id,
@@ -70,13 +72,37 @@ class InterviewEngine:
             text=answer_text,
         )
         db.add(answer)
+        db.flush()
+
+        evaluator = get_evaluator()
+        evaluation = evaluator.evaluate(
+            question_text=question.text,
+            answer_text=answer_text,
+            topic=question.topic,
+            difficulty=question.difficulty,
+        )
+
+        feedback = Feedback(
+            session_id=session_id,
+            question_id=question_id,
+            answer_id=answer.id,
+            score=evaluation["score"],
+            clarity_score=evaluation["clarity_score"],
+            correctness_score=evaluation["correctness_score"],
+            confidence_score=evaluation["confidence_score"],
+            feedback_text=evaluation["feedback_text"],
+            missing_points=evaluation["missing_points"],
+            better_answer=evaluation["better_answer"],
+        )
+        db.add(feedback)
 
         session_obj.current_question_index += 1
         if session_obj.current_question_index >= session_obj.total_questions:
             session_obj.status = "completed"
 
         db.commit()
-        db.refresh(session_obj)
         db.refresh(answer)
+        db.refresh(feedback)
+        db.refresh(session_obj)
 
-        return answer, session_obj
+        return answer, feedback, session_obj
