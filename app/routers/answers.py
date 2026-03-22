@@ -29,7 +29,8 @@ def submit_answer(
 
     return {
         "answer_id": answer.id,
-        "feedback_id": FeedbackRead.model_validate(feedback, from_attributes=True),
+        "feedback_id": feedback.id,
+        "feedback": FeedbackRead.model_validate(feedback, from_attributes=True),
         "session_status": session_obj.status,
         "current_question_index": session_obj.current_question_index,
     }
