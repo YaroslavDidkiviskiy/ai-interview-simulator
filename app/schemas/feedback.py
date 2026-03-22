@@ -1,21 +1,22 @@
 """Feedback schemas."""
 
-from pydantic import BaseModel
+from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict
 
 
-class FeedbackBase(BaseModel):
-    comments: str
-    score: int | None = None
+class FeedbackRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
 
-
-class FeedbackCreate(FeedbackBase):
-    answer_id: int
-
-
-class FeedbackRead(FeedbackBase):
     id: int
+    session_id: int
+    question_id: int
     answer_id: int
-
-    class Config:
-        orm_mode = True
-
+    score: int
+    clarity_score: int
+    correctness_score: int
+    confidence_score: int
+    feedback_text: str
+    missing_points: list[str]
+    better_answer: list[str]
+    created_at: datetime
