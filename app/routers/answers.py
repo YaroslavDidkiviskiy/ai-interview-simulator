@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.schemas.answer import AnswerCreateSchema
+from app.schemas.feedback import FeedbackRead
 from app.services.interview_engine import InterviewEngine
 
 router = APIRouter(prefix="/api/sessions/{session_id}/answers", tags=["answers"])
@@ -17,7 +18,7 @@ def submit_answer(
     engine = InterviewEngine()
 
     try:
-        answer, session_obj = engine.submit_answer(
+        answer, feedback, session_obj = engine.submit_answer(
             db=db,
             session_id=session_id,
             question_id=payload.question_id,
@@ -28,6 +29,7 @@ def submit_answer(
 
     return {
         "answer_id": answer.id,
+        "feedback_id": FeedbackRead.model_validate(feedback, from_attributes=True),
         "session_status": session_obj.status,
         "current_question_index": session_obj.current_question_index,
     }
