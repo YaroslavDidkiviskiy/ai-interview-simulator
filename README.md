@@ -1,6 +1,6 @@
 # AI Interview Simulator
 
-Веб-застосунок для підготовки до технічних співбесід. Задає питання, оцінює відповіді через локальну LLM і дає детальний фідбек.
+A web application for preparing for technical interviews. Asks questions, evaluates answers via local LLM, and provides detailed feedback.
 
 ## Tech Stack
 
@@ -11,11 +11,11 @@
 
 ## Features
 
-- Сесії співбесід з вибором ролі (Python Backend), рівня (Junior/Mid/Senior) і типу (Technical/HR/Mixed)
-- AI-оцінка відповідей: загальний скор, clarity, correctness, confidence
-- Детальний фідбек: що пропустив, як відповісти краще
-- JWT аутентифікація з refresh token rotation
-- Захищені ендпоінти — сесії прив'язані до конкретного юзера
+- Interview sessions with choice of role (Python Backend), level (Junior/Mid/Senior) and type (Technical/HR/Mixed)
+- AI-assessment of answers: overall score, clarity, correctness, confidence
+- Detailed feedback: what did you miss, how to answer better
+- JWT authentication with refresh token rotation
+- Secure endpoints — sessions are tied to a specific user
 
 ## Project Structure
 
@@ -51,30 +51,31 @@ sample_data/            # Банк питань (JSON)
 
 ## Auth Architecture
 
-Авторизація побудована на двох токенах:
+Authorization is based on two tokens:
 
-- **Access token** — JWT, живе 30 хвилин, передається в `Authorization: Bearer` header
-- **Refresh token** — random string (не JWT), живе 7 днів, зберігається в БД і в `httpOnly` cookie
+- **Access token** — JWT, lives for 30 minutes, transmitted in `Authorization: Bearer` header
 
-При кожному `/auth/refresh` відбувається **token rotation**: старий refresh відкликається, видається новий. Якщо хтось вкраде refresh token і спробує використати його після rotation — він вже буде revoked.
+- **Refresh token** — random string (not JWT), lives for 7 days, stored in the database and in `httpOnly` cookie
+
+With each `/auth/refresh`, **token rotation** occurs: the old refresh is revoked, a new one is issued. If someone steals the refresh token and tries to use it after rotation — it will already be revoked.
 
 ```
-POST /auth/register   — реєстрація
-POST /auth/login      — логін, повертає access token + refresh cookie
-POST /auth/refresh    — оновлення access token
-POST /auth/logout     — revoke refresh token
-GET  /auth/me         — дані поточного юзера
+POST /auth/register — registration
+POST /auth/login — login, returns access token + refresh cookie
+POST /auth/refresh — update access token
+POST /auth/logout — revoke refresh token
+GET /auth/me — current user data
 ```
 
 ## API
 
 ```
-POST   /api/sessions              — створити сесію
-GET    /api/sessions/{id}         — деталі сесії з питаннями
-POST   /api/sessions/{id}/answers — відправити відповідь + отримати feedback
+POST /api/sessions — create session
+GET /api/sessions/{id} — session details with questions
+POST /api/sessions/{id}/answers — send answer + get feedback
 ```
 
-Всі `/api/*` ендпоінти потребують валідного JWT токена.
+All `/api/*` endpoints require a valid JWT token.
 
 ## Getting Started
 
