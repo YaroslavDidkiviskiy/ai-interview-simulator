@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.config import get_settings
+from app.auth.router import router as auth_router
 from app.routers import sessions_router, answers_router, health_router
 
 settings = get_settings()
@@ -14,3 +15,4 @@ app = FastAPI(
 app.include_router(sessions_router)
 app.include_router(answers_router)
 app.include_router(health_router)
+app.include_router(auth_router)

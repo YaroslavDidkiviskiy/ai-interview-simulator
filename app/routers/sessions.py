@@ -2,6 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
+from app.auth.dependencies import get_current_user
+from app.auth.models import User
+
 from app.db import get_db
 from app.models.session import InterviewSession
 from app.schemas.session import QuestionRead, SessionCreateSchema, SessionDetailRead, SessionRead
@@ -14,10 +17,13 @@ router = APIRouter(prefix="/api/sessions", tags=["sessions"])
 def create_session(
     session_data: SessionCreateSchema,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     engine = InterviewEngine()
     try:
         created = engine.create_session(db=db, session_data=session_data)
+        created.user_id = current_user.id
+        db.commit()
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
     return created
@@ -27,6 +33,7 @@ def create_session(
 def session_detail(
     session_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     stmt = (
         select(InterviewSession)

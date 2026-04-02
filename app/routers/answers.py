@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.auth.dependencies import get_current_user
+
 from app.db import get_db
 from app.schemas.answer import AnswerCreateSchema
 from app.schemas.feedback import FeedbackRead
@@ -14,6 +16,7 @@ def submit_answer(
     session_id: int,
     payload: AnswerCreateSchema,
     db: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
 ):
     engine = InterviewEngine()
 

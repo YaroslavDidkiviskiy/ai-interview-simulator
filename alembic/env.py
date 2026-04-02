@@ -5,6 +5,7 @@ from alembic import context
 
 from app.config import get_settings
 from app.db import Base
+from app.auth import models as auth_models
 from app.models import Answer, Feedback, InterviewSession, Question
 
 
