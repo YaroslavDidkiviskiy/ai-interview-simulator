@@ -25,8 +25,8 @@ class Settings(BaseSettings):
     )
 
     secret_key: str = Field(default="change-me-in-production", alias="SECRET_KEY")
-    access_expire_min = Field(default=30, alias="ACCESS_EXPIRE_MIN")
-    refresh_expire_days = Field(default=7, alias="REFRESH_EXPIRE_DAYS")
+    access_expire_min: int = Field(default=30, alias="ACCESS_EXPIRE_MIN")
+    refresh_expire_days: int = Field(default=7, alias="REFRESH_EXPIRE_DAYS")
 
 
 @lru_cache
