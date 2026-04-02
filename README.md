@@ -21,32 +21,32 @@ A web application for preparing for technical interviews. Asks questions, evalua
 
 ```
 app/
-├── auth/               # JWT аутентифікація
-│   ├── models.py       # User, RefreshToken
-│   ├── schemas.py      # Pydantic схеми
-│   ├── security.py     # bcrypt, JWT
-│   ├── dependencies.py # get_current_user, require_role
-│   └── router.py       # /auth endpoints
-├── models/             # Основні моделі БД
-│   ├── session.py      # InterviewSession
-│   ├── question.py     # Question
-│   ├── answer.py       # Answer
-│   └── feedback.py     # Feedback
-├── routers/            # API ендпоінти
-│   ├── sessions.py     # /api/sessions
-│   └── answers.py      # /api/sessions/{id}/answers
-├── schemas/            # Pydantic схеми
+├── auth/ # JWT authentication
+│ ├── models.py # User, RefreshToken
+│ ├── schemas.py # Pydantic schemas
+│ ├── security.py # bcrypt, JWT
+│ ├── dependencies.py # get_current_user, require_role
+│ └── router.py # /auth endpoints
+├── models/ # Basic DB models
+│ ├── session.py # InterviewSession
+│ ├── question.py # Question
+│ ├── answer.py # Answer
+│ └── feedback.py # Feedback
+├── routers/ # API endpoints
+│ ├── sessions.py # /api/sessions
+│ └── answers.py # /api/sessions/{id}/answers
+├── schemas/ # Pydantic schemas
 ├── services/
-│   ├── interview_engine.py       # Логіка сесії
-│   ├── question_selector.py      # Вибір питань з банку
-│   └── evaluators/
-│       └── ollama.py             # Оцінка відповідей через LLM
-├── db.py               # SQLAlchemy engine + session
-├── config.py           # Налаштування через pydantic-settings
-└── main.py             # FastAPI app
-frontend/               # React + TypeScript
-alembic/                # Міграції БД
-sample_data/            # Банк питань (JSON)
+│ ├── interview_engine.py # Session logic
+│ ├── question_selector.py # Question selection from the bank
+│ └── evaluators/
+│ └── ollama.py # Evaluation of answers via LLM
+├── db.py # SQLAlchemy engine + session
+├── config.py # Settings via pydantic-settings
+└── main.py # FastAPI app
+frontend/ # React + TypeScript
+alembic/ # Database migrations
+sample_data/ # Question bank (JSON)
 ```
 
 ## Auth Architecture
