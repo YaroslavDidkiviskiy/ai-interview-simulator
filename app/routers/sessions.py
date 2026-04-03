@@ -21,8 +21,7 @@ def create_session(
 ):
     engine = InterviewEngine()
     try:
-        created = engine.create_session(db=db, session_data=session_data)
-        created.user_id = current_user.id
+        created = engine.create_session(db=db, session_data=session_data, user_id=current_user.id)
         db.commit()
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
