@@ -1,4 +1,5 @@
 import secrets
+import hashlib
 from datetime import datetime, timedelta, timezone
 
 from jose import jwt, JWTError
@@ -7,23 +8,27 @@ from passlib.context import CryptContext
 from app.config import get_settings
 
 settings = get_settings()
-pwd_ctx = CryptContext(schemes=["bcrypt"])
+pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
 ALGORITHM = "HS256"
 
 
 def hash_password(password: str) -> str:
-    return pwd_ctx.hash(password)
+    prehashed = hashlib.sha256(password.encode()).hexdigest()
+    return pwd_ctx.hash(prehashed)
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
-    return pwd_ctx.verify(password, hashed_password)
+    prehashed = hashlib.sha256(password.encode()).hexdigest()
+    return pwd_ctx.verify(prehashed, hashed_password)
 
 
 def create_access_token(data: dict) -> str:
-    payload = data | {
+    payload = data.copy()
+    payload.update({
         "exp": datetime.now(timezone.utc) + timedelta(minutes=settings.access_expire_min),
+        "iat": datetime.now(timezone.utc),
         "type": "access",
-    }
+    })
     return jwt.encode(payload, settings.secret_key, algorithm=ALGORITHM)
 
 
