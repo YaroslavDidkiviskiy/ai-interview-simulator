@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.config import get_settings
 from app.db import get_db
 from app.auth.models import RefreshToken, User
-from app.auth.schemas import LoginResponse, MeResponse, RegisterRequest
+from app.auth.schemas import LoginResponse, RegisterRequest
 from app.auth.security import (
     create_access_token, create_refresh_token,
     hash_password, verify_password,
@@ -131,12 +131,3 @@ def logout(
 
     response.delete_cookie("refresh_token")
     return {"ok": True}
-
-
-@router.get("/me", response_model=MeResponse)
-def me(current_user: User = Depends(get_current_user)):
-    return {
-        "id": current_user.id,
-        "email": current_user.email,
-        "role": current_user.role.value
-    }
