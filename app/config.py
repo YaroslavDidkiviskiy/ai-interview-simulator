@@ -24,6 +24,10 @@ class Settings(BaseSettings):
         populate_by_name=True,
     )
 
+    secret_key: str = Field(default="change-me-in-production", alias="SECRET_KEY")
+    access_expire_min: int = Field(default=30, alias="ACCESS_EXPIRE_MIN")
+    refresh_expire_days: int = Field(default=7, alias="REFRESH_EXPIRE_DAYS")
+
 
 @lru_cache
 def get_settings() -> Settings:

@@ -13,7 +13,7 @@ class InterviewEngine:
     def __init__(self, question_selector: QuestionSelector | None = None) -> None:
         self.question_selector = question_selector or QuestionSelector()
 
-    def create_session(self, db: Session, session_data: SessionCreateSchema) -> InterviewSession:
+    def create_session(self, db: Session, session_data: SessionCreateSchema, user_id: str) -> InterviewSession:
         selected_questions = self.question_selector.select_questions(
             role=session_data.role,
             level=session_data.level,
@@ -22,6 +22,7 @@ class InterviewEngine:
         )
 
         interview_session = InterviewSession(
+            user_id=user_id,
             role=session_data.role,
             level=session_data.level,
             interview_type=session_data.interview_type,
