@@ -44,6 +44,9 @@ def session_detail(
     if session_obj is None:
         raise HTTPException(status_code=404, detail="Session not found")
 
+    if session_obj.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Access denied")
+
     ordered_questions = sorted(session_obj.questions, key=lambda q: q.order_index)
 
     current_question = None
