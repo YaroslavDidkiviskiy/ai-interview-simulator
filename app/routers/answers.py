@@ -2,24 +2,30 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.auth.dependencies import get_current_user
-
 from app.db import get_db
+from app.models.session import InterviewSession
 from app.schemas.answer import AnswerCreateSchema
 from app.schemas.feedback import FeedbackRead
 from app.services.interview_engine import InterviewEngine
 
 router = APIRouter(prefix="/api/sessions/{session_id}/answers", tags=["answers"])
 
-
-@router.post("/", status_code=201)
+@router.post("", status_code=201)
 def submit_answer(
     session_id: int,
     payload: AnswerCreateSchema,
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user),
 ):
-    engine = InterviewEngine()
+    session_obj = db.get(InterviewSession, session_id)
 
+    if session_obj is None:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    if session_obj.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    engine = InterviewEngine()
     try:
         answer, feedback, session_obj = engine.submit_answer(
             db=db,
