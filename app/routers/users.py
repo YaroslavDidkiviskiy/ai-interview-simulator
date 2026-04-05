@@ -47,7 +47,7 @@ def get_my_stats(
     completed_sessions = db.query(InterviewSession).filter(
         InterviewSession.user_id == current_user.id,
         InterviewSession.status == "completed"
-    )
+    ).count()
 
     avg_score = db.query(func.avg(Feedback.score)).join(
         InterviewSession, Feedback.session_id == InterviewSession.id
@@ -58,5 +58,5 @@ def get_my_stats(
     return {
         "total_sessions": total_sessions,
         "completed_sessions": completed_sessions,
-        "avg_score": round(float(avg_score), 1) if avg_score else None
+        "avg_score": round(float(avg_score), 1) if avg_score is not None else 0.0
     }
