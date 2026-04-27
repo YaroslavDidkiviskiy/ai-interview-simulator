@@ -8,6 +8,13 @@ import {
   SessionDetail,
   submitAnswer,
 } from '../api/client'
+import {
+  formatInterviewTypeLabel,
+  formatLevelLabel,
+  formatRoleLabel,
+  formatSessionStatus,
+  formatTopicLabel,
+} from '../utils/formatDisplay'
 
 // ─── tiny helpers ────────────────────────────────────────────────────────────
 
@@ -65,14 +72,22 @@ function DifficultyBadge({ level }: { level: number }) {
 }
 
 function TopicBadge({ topic }: { topic: string }) {
+  const label = formatTopicLabel(topic)
   return (
-    <span style={{
-      background: '#0f172a', color: '#94a3b8',
-      border: '1px solid #1e293b',
-      borderRadius: 999, padding: '2px 10px',
-      fontSize: 11, fontWeight: 500,
-    }}>
-      {topic}
+    <span
+      title={topic}
+      style={{
+        background: '#1e1b4b40',
+        color: '#c7d2fe',
+        border: '1px solid #4f46e545',
+        borderRadius: 999,
+        padding: '3px 11px',
+        fontSize: 11,
+        fontWeight: 600,
+        letterSpacing: '0.02em',
+      }}
+    >
+      {label}
     </span>
   )
 }
@@ -327,10 +342,12 @@ export default function SessionDetailPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <div>
             <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#f1f5f9', letterSpacing: '-0.02em' }}>
-              {session.role.replace(/_/g, ' ')}
+              {formatRoleLabel(session.role)}
             </h1>
-            <p style={{ margin: '4px 0 0', fontSize: 13, color: '#64748b' }}>
-              {session.level} · {session.interview_type}
+            <p style={{ margin: '4px 0 0', fontSize: 13, color: '#94a3b8', fontWeight: 500 }}>
+              {formatLevelLabel(session.level)}
+              <span style={{ margin: '0 0.5em', color: '#475569' }}>·</span>
+              {formatInterviewTypeLabel(session.interview_type)}
             </p>
           </div>
           <span style={{
@@ -339,7 +356,7 @@ export default function SessionDetailPage() {
             color: session.status === 'completed' ? '#60a5fa' : '#a5b4fc',
             border: `1px solid ${session.status === 'completed' ? '#1d4ed8' : '#4f46e5'}40`,
           }}>
-            {session.status ?? 'active'}
+            {formatSessionStatus(session.status)}
           </span>
         </div>
       </div>

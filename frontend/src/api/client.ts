@@ -1,5 +1,64 @@
 const BASE = '/api'
 
+function getToken() {
+  return localStorage.getItem('access_token')
+}
+
+async function refreshToken(): Promise<string | null> {
+  const res = await fetch('/auth/refresh', { method: 'POST', credentials: 'include' })
+  if (!res.ok) return null
+  const data = await res.json()
+  localStorage.setItem('access_token', data.access_token)
+  return data.access_token
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const token = getToken()
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  }
+
+  let res = await fetch(`${BASE}${path}`, { ...init, headers: { ...headers, ...asRecord(init?.headers) } })
+
+  if (res.status === 401) {
+    const newToken = await refreshToken()
+    if (newToken) {
+      const h: Record<string, string> = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${newToken}`,
+        ...asRecord(init?.headers),
+      }
+      res = await fetch(`${BASE}${path}`, { ...init, headers: h })
+    } else {
+      localStorage.removeItem('access_token')
+      window.location.href = '/login'
+      throw new Error('Unauthorized')
+    }
+  }
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: 'Request failed' }))
+    throw new Error(typeof err.detail === 'string' ? err.detail : JSON.stringify(err.detail))
+  }
+  return res.json()
+}
+
+function asRecord(h: HeadersInit | undefined): Record<string, string> {
+  if (!h) return {}
+  if (h instanceof Headers) {
+    const o: Record<string, string> = {}
+    h.forEach((v, k) => {
+      o[k] = v
+    })
+    return o
+  }
+  if (Array.isArray(h)) {
+    return Object.fromEntries(h)
+  }
+  return { ...h }
+}
+
 export interface Session {
   id: number
   role: string
@@ -32,18 +91,6 @@ export interface CreateSessionPayload {
   level: string
   interview_type: string
   total_questions: number
-}
-
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...init,
-  })
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: 'Request failed' }))
-    throw new Error(typeof err.detail === 'string' ? err.detail : JSON.stringify(err.detail))
-  }
-  return res.json()
 }
 
 export interface SubmitAnswerPayload {
