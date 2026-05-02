@@ -1,12 +1,12 @@
 # AI Interview Simulator
 
-A web application for preparing for technical interviews. Asks questions, evaluates answers via local LLM, and provides detailed feedback.
+A web application for preparing for technical interviews. Asks questions, evaluates answers via LLM, and provides detailed feedback.
 
 ## Tech Stack
 
 **Backend:** Python, FastAPI, SQLAlchemy, PostgreSQL, Alembic, JWT Auth  
 **Frontend:** React, TypeScript, Tailwind CSS  
-**AI:** Ollama (локальна LLM, llama3.2)  
+**AI:** Ollama (LLM, llama3.2)  
 **Infra:** Docker, Docker Compose
 
 ## Features
