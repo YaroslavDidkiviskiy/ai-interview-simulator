@@ -15,6 +15,7 @@ class InterviewEngine:
 
     def create_session(self, db: Session, session_data: SessionCreateSchema, user_id: str) -> InterviewSession:
         selected_questions = self.question_selector.select_questions(
+            db=db,
             role=session_data.role,
             level=session_data.level,
             interview_type=session_data.interview_type,
