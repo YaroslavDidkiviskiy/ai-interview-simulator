@@ -2,6 +2,7 @@ import json
 import re
 
 from app.services.evaluators.base import BaseEvaluator
+from app.services.evaluators.prompts import get_interview_type_guidance, get_level_guidance
 from app.services.llm.ollama_client import OllamaClient
 
 
@@ -36,14 +37,25 @@ class OllamaEvaluator(BaseEvaluator):
         answer_text: str,
         topic: str,
         difficulty: int,
+        level: str,
+        interview_type: str,
     ) -> str:
+        level_guidance = get_level_guidance(level)
+        interview_type_guidance = get_interview_type_guidance(interview_type)
+
         return f"""
-            You are a technical interview evaluator.
+            You are a software engineer interview evaluator.
 
             Evaluate the candidate's answer.
 
             Question topic: {topic}
             Difficulty: {difficulty}
+            Candidate level: {level}
+            Interview type: {interview_type}
+
+            Evaluation calibration:
+            - {level_guidance}
+            - {interview_type_guidance}
 
             Question:
             {question_text}
@@ -77,12 +89,16 @@ class OllamaEvaluator(BaseEvaluator):
         answer_text: str,
         topic: str,
         difficulty: int,
+        level: str,
+        interview_type: str,
     ) -> dict:
         prompt = self.build_prompt(
             question_text=question_text,
             answer_text=answer_text,
             topic=topic,
             difficulty=difficulty,
+            level=level,
+            interview_type=interview_type,
         )
 
         raw_response = self.client.generate(prompt)
