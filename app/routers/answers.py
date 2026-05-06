@@ -10,7 +10,7 @@ from app.services.interview_engine import InterviewEngine
 
 router = APIRouter(prefix="/api/sessions/{session_id}/answers", tags=["answers"])
 
-@router.post("", status_code=201)
+@router.post("/", status_code=201)
 def submit_answer(
     session_id: int,
     payload: AnswerCreateSchema,

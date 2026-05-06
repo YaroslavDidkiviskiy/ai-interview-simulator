@@ -81,6 +81,8 @@ class InterviewEngine:
             answer_text=answer_text,
             topic=question.topic,
             difficulty=question.difficulty,
+            level=session_obj.level,
+            interview_type=session_obj.interview_type,
         )
 
         feedback = Feedback(
