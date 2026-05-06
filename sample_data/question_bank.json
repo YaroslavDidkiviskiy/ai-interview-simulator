@@ -1,114 +1,269 @@
 [
-    {
-      "role": "python_backend",
-      "level": "junior",
-      "interview_type": "technical",
-      "topic": "python",
-      "difficulty": 1,
-      "question": "What is the difference between a list and a tuple in Python?"
-    },
-    {
-      "role": "python_backend",
-      "level": "junior",
-      "interview_type": "technical",
-      "topic": "python",
-      "difficulty": 1,
-      "question": "What is the difference between == and is in Python?"
-    },
-    {
-      "role": "python_backend",
-      "level": "junior",
-      "interview_type": "technical",
-      "topic": "oop",
-      "difficulty": 2,
-      "question": "What is encapsulation in object-oriented programming?"
-    },
-    {
-      "role": "python_backend",
-      "level": "junior",
-      "interview_type": "technical",
-      "topic": "sql",
-      "difficulty": 1,
-      "question": "What is a primary key in a database?"
-    },
-    {
-      "role": "python_backend",
-      "level": "junior",
-      "interview_type": "technical",
-      "topic": "sql",
-      "difficulty": 2,
-      "question": "What is the difference between INNER JOIN and LEFT JOIN?"
-    },
-    {
-      "role": "python_backend",
-      "level": "junior",
-      "interview_type": "technical",
-      "topic": "django",
-      "difficulty": 2,
-      "question": "What is the role of models in Django?"
-    },
-    {
-      "role": "python_backend",
-      "level": "junior",
-      "interview_type": "technical",
-      "topic": "drf",
-      "difficulty": 2,
-      "question": "What are serializers in Django REST Framework used for?"
-    },
-    {
-      "role": "python_backend",
-      "level": "junior",
-      "interview_type": "technical",
-      "topic": "fastapi",
-      "difficulty": 2,
-      "question": "What is dependency injection in FastAPI?"
-    },
-    {
-      "role": "python_backend",
-      "level": "junior",
-      "interview_type": "technical",
-      "topic": "docker",
-      "difficulty": 1,
-      "question": "Why do developers use Docker?"
-    },
-    {
-      "role": "python_backend",
-      "level": "junior",
-      "interview_type": "technical",
-      "topic": "rest",
-      "difficulty": 1,
-      "question": "What is REST API?"
-    },
-    {
-      "role": "python_backend",
-      "level": "junior",
-      "interview_type": "hr",
-      "topic": "hr",
-      "difficulty": 1,
-      "question": "Tell me about yourself."
-    },
-    {
-      "role": "python_backend",
-      "level": "junior",
-      "interview_type": "hr",
-      "topic": "hr",
-      "difficulty": 1,
-      "question": "Why are you looking for a new job?"
-    },
-    {
-      "role": "python_backend",
-      "level": "junior",
-      "interview_type": "mixed",
-      "topic": "python",
-      "difficulty": 1,
-      "question": "What is the difference between a list and a tuple in Python?"
-    },
-    {
-      "role": "python_backend",
-      "level": "junior",
-      "interview_type": "mixed",
-      "topic": "hr",
-      "difficulty": 1,
-      "question": "Tell me about yourself."
-    }
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 1,
+    "question": "What is the difference between a list and a tuple in Python?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 1,
+    "question": "What is the difference between == and is in Python?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 2,
+    "question": "What is encapsulation in object-oriented programming?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "sql",
+    "difficulty": 1,
+    "question": "What is a primary key in a database?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "sql",
+    "difficulty": 2,
+    "question": "What is the difference between INNER JOIN and LEFT JOIN?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "django",
+    "difficulty": 2,
+    "question": "What is the role of models in Django?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "drf",
+    "difficulty": 2,
+    "question": "What are serializers in Django REST Framework used for?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "fastapi",
+    "difficulty": 2,
+    "question": "What is dependency injection in FastAPI?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "docker",
+    "difficulty": 1,
+    "question": "Why do developers use Docker?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "rest",
+    "difficulty": 1,
+    "question": "What is REST API?"
+  },
+
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "Tell me about yourself."
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "Why are you looking for a new job?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "What are your strengths and weaknesses?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "Why do you want to work in this company?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "How do you handle stress or tight deadlines?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "Describe a challenge you faced and how you solved it."
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "Where do you see yourself in 2-3 years?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "How do you learn new technologies?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "Do you prefer working alone or in a team?"
+  },
+
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 3,
+    "question": "What is the Global Interpreter Lock (GIL) and how does it affect multithreading in Python?"
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 3,
+    "question": "What is the difference between multiprocessing and multithreading in Python?"
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "database",
+    "difficulty": 3,
+    "question": "What is database indexing and how does it improve performance?"
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "django",
+    "difficulty": 3,
+    "question": "What is the difference between select_related and prefetch_related in Django ORM?"
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "rest",
+    "difficulty": 3,
+    "question": "What are HTTP methods and when should you use GET, POST, PUT, PATCH, DELETE?"
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "testing",
+    "difficulty": 3,
+    "question": "What is unit testing and how do you test Python applications?"
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "async",
+    "difficulty": 3,
+    "question": "What is async and await in Python and when should you use them?"
+  },
+
+  {
+    "role": "python_backend",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "architecture",
+    "difficulty": 4,
+    "question": "How would you design a scalable backend system for high load?"
+  },
+  {
+    "role": "python_backend",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 4,
+    "question": "Explain how Python manages memory and garbage collection."
+  },
+  {
+    "role": "python_backend",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "system_design",
+    "difficulty": 4,
+    "question": "What are microservices and what are their pros and cons?"
+  },
+  {
+    "role": "python_backend",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "database",
+    "difficulty": 4,
+    "question": "How would you optimize slow database queries in a production system?"
+  },
+  {
+    "role": "python_backend",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 4,
+    "question": "How do you handle concurrency and race conditions in backend systems?"
+  },
+  {
+    "role": "python_backend",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "architecture",
+    "difficulty": 4,
+    "question": "What design patterns do you commonly use in backend development?"
+  },
+  {
+    "role": "python_backend",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "security",
+    "difficulty": 4,
+    "question": "How do you secure a REST API?"
+  }
 ]
