@@ -81,76 +81,100 @@
   },
 
   {
-    "role": "python_backend",
-    "level": "junior",
+    "role": "any",
+    "level": "any",
     "interview_type": "hr",
     "topic": "hr",
     "difficulty": 1,
     "question": "Tell me about yourself."
   },
   {
-    "role": "python_backend",
-    "level": "junior",
+    "role": "any",
+    "level": "any",
     "interview_type": "hr",
     "topic": "hr",
     "difficulty": 1,
     "question": "Why are you looking for a new job?"
   },
   {
-    "role": "python_backend",
-    "level": "junior",
+    "role": "any",
+    "level": "any",
     "interview_type": "hr",
     "topic": "hr",
     "difficulty": 1,
     "question": "What are your strengths and weaknesses?"
   },
   {
-    "role": "python_backend",
-    "level": "junior",
+    "role": "any",
+    "level": "any",
     "interview_type": "hr",
     "topic": "hr",
     "difficulty": 1,
     "question": "Why do you want to work in this company?"
   },
   {
-    "role": "python_backend",
-    "level": "junior",
+    "role": "any",
+    "level": "any",
     "interview_type": "hr",
     "topic": "hr",
     "difficulty": 1,
     "question": "How do you handle stress or tight deadlines?"
   },
   {
-    "role": "python_backend",
-    "level": "junior",
+    "role": "any",
+    "level": "any",
     "interview_type": "hr",
     "topic": "hr",
     "difficulty": 1,
     "question": "Describe a challenge you faced and how you solved it."
   },
   {
-    "role": "python_backend",
-    "level": "junior",
+    "role": "any",
+    "level": "any",
     "interview_type": "hr",
     "topic": "hr",
     "difficulty": 1,
     "question": "Where do you see yourself in 2-3 years?"
   },
   {
-    "role": "python_backend",
-    "level": "junior",
+    "role": "any",
+    "level": "any",
     "interview_type": "hr",
     "topic": "hr",
     "difficulty": 1,
     "question": "How do you learn new technologies?"
   },
   {
-    "role": "python_backend",
-    "level": "junior",
+    "role": "any",
+    "level": "any",
     "interview_type": "hr",
     "topic": "hr",
     "difficulty": 1,
     "question": "Do you prefer working alone or in a team?"
+  },
+  {
+    "role": "any",
+    "level": "any",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "What motivates you in your work?"
+  },
+  {
+    "role": "any",
+    "level": "any",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "How do you deal with feedback or criticism?"
+  },
+  {
+    "role": "any",
+    "level": "any",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "What are your career goals?"
   },
 
   {
