@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { Flag, ChevronRight, AlertTriangle, Loader2, CheckCircle2 } from 'lucide-react'
 import Layout from '../components/Layout'
 import {
   FeedbackDto,
@@ -15,8 +16,6 @@ import {
   formatSessionStatus,
   formatTopicLabel,
 } from '../utils/formatDisplay'
-
-// ─── tiny helpers ────────────────────────────────────────────────────────────
 
 function scoreColor(v: number) {
   if (v >= 8) return '#4ade80'
@@ -66,7 +65,7 @@ function DifficultyBadge({ level }: { level: number }) {
       borderRadius: 999, padding: '2px 10px',
       fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
     }}>
-      ⚡ {level}
+      {level}
     </span>
   )
 }
@@ -74,37 +73,25 @@ function DifficultyBadge({ level }: { level: number }) {
 function TopicBadge({ topic }: { topic: string }) {
   const label = formatTopicLabel(topic)
   return (
-    <span
-      title={topic}
-      style={{
-        background: '#1e1b4b40',
-        color: '#c7d2fe',
-        border: '1px solid #4f46e545',
-        borderRadius: 999,
-        padding: '3px 11px',
-        fontSize: 11,
-        fontWeight: 600,
-        letterSpacing: '0.02em',
-      }}
-    >
+    <span title={topic} style={{
+      background: '#1e1b4b40', color: '#c7d2fe',
+      border: '1px solid #4f46e545', borderRadius: 999,
+      padding: '3px 11px', fontSize: 11, fontWeight: 600, letterSpacing: '0.02em',
+    }}>
       {label}
     </span>
   )
 }
-
-// ─── feedback panel ───────────────────────────────────────────────────────────
 
 function FeedbackPanel({ fb, onNext, isLast }: { fb: FeedbackDto; onNext: () => void; isLast: boolean }) {
   return (
     <div style={{
       marginTop: 24,
       background: 'linear-gradient(135deg,#0c1929 0%,#0f172a 100%)',
-      border: '1px solid #1d4ed840',
-      borderRadius: 20,
+      border: '1px solid #1d4ed840', borderRadius: 20,
       padding: '28px 28px 24px',
       animation: 'slideUp 0.4s cubic-bezier(.4,0,.2,1)',
     }}>
-      {/* score rings */}
       <div style={{ display: 'flex', gap: 20, justifyContent: 'center', marginBottom: 24 }}>
         <ScoreRing value={fb.score} label="Overall" />
         <ScoreRing value={fb.correctness_score} label="Correct" />
@@ -112,12 +99,10 @@ function FeedbackPanel({ fb, onNext, isLast }: { fb: FeedbackDto; onNext: () => 
         <ScoreRing value={fb.confidence_score} label="Confidence" />
       </div>
 
-      {/* feedback text */}
       <p style={{ color: '#cbd5e1', lineHeight: 1.7, marginBottom: 20, fontSize: 14 }}>
         {fb.feedback_text}
       </p>
 
-      {/* missing points */}
       {fb.missing_points.length > 0 && (
         <div style={{ marginBottom: 16 }}>
           <p style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>
@@ -131,7 +116,6 @@ function FeedbackPanel({ fb, onNext, isLast }: { fb: FeedbackDto; onNext: () => 
         </div>
       )}
 
-      {/* better answer */}
       {fb.better_answer.length > 0 && (
         <div style={{ marginBottom: 24 }}>
           <p style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>
@@ -145,7 +129,6 @@ function FeedbackPanel({ fb, onNext, isLast }: { fb: FeedbackDto; onNext: () => 
         </div>
       )}
 
-      {/* next button */}
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <button onClick={onNext} style={{
           display: 'flex', alignItems: 'center', gap: 8,
@@ -165,14 +148,15 @@ function FeedbackPanel({ fb, onNext, isLast }: { fb: FeedbackDto; onNext: () => 
             ;(e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 24px #4f46e540'
           }}
         >
-          {isLast ? '🏁 Finish Interview' : 'Next Question →'}
+          {isLast
+            ? <><Flag className="w-4 h-4" /> Finish Interview</>
+            : <>Next Question <ChevronRight className="w-4 h-4" /></>
+          }
         </button>
       </div>
     </div>
   )
 }
-
-// ─── question list item ───────────────────────────────────────────────────────
 
 function QuestionListItem({ question, index, currentIndex }: {
   question: Question; index: number; currentIndex: number
@@ -185,8 +169,7 @@ function QuestionListItem({ question, index, currentIndex }: {
       padding: '12px 16px', borderRadius: 14,
       background: isCurrent ? '#1e1b4b30' : isPast ? '#0f172a60' : '#0f172a',
       border: `1px solid ${isCurrent ? '#6366f150' : isPast ? '#1e293b50' : '#1e293b'}`,
-      opacity: isPast ? 0.55 : 1,
-      transition: 'all 0.2s',
+      opacity: isPast ? 0.55 : 1, transition: 'all 0.2s',
     }}>
       <div style={{
         width: 26, height: 26, borderRadius: '50%', flexShrink: 0, marginTop: 2,
@@ -196,7 +179,10 @@ function QuestionListItem({ question, index, currentIndex }: {
         border: isCurrent ? 'none' : '1px solid #334155',
         color: isCurrent ? '#fff' : isPast ? '#94a3b8' : '#475569',
       }}>
-        {isPast ? '✓' : index + 1}
+        {isPast
+          ? <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" />
+          : index + 1
+        }
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', gap: 6, marginBottom: 4, flexWrap: 'wrap' }}>
@@ -214,8 +200,6 @@ function QuestionListItem({ question, index, currentIndex }: {
     </div>
   )
 }
-
-// ─── main page ────────────────────────────────────────────────────────────────
 
 type Phase = 'answering' | 'submitting' | 'feedback'
 
@@ -238,7 +222,6 @@ export default function SessionDetailPage() {
 
   useEffect(() => { fetchSession() }, [fetchSession])
 
-  // When moving to next question — reset to answering phase
   function handleNext() {
     setLastFeedback(null)
     setAnswer('')
@@ -258,7 +241,6 @@ export default function SessionDetailPage() {
         text: answer.trim(),
       })
       setLastFeedback(res.feedback)
-      // Update session status locally (completed check)
       setSession(prev => prev ? {
         ...prev,
         status: res.session_status ?? prev.status,
@@ -282,8 +264,8 @@ export default function SessionDetailPage() {
 
   if (!session) return (
     <Layout>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 0', color: '#475569' }}>
-        <span style={{ marginRight: 10 }}>⏳</span> Loading session…
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px 0', color: '#475569', gap: 10 }}>
+        <Loader2 className="w-5 h-5 animate-spin" /> Loading session…
       </div>
     </Layout>
   )
@@ -296,27 +278,17 @@ export default function SessionDetailPage() {
   return (
     <Layout>
       <style>{`
-        @keyframes slideUp {
-          from { opacity:0; transform:translateY(16px); }
-          to   { opacity:1; transform:translateY(0); }
-        }
-        @keyframes fadeIn {
-          from { opacity:0; }
-          to   { opacity:1; }
-        }
+        @keyframes slideUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
         .answer-textarea {
           width: 100%; box-sizing: border-box;
           background: #0f172a; color: #e2e8f0;
           border: 1px solid #1e293b; border-radius: 14px;
           padding: 16px 18px; font-size: 14px; line-height: 1.7;
           resize: vertical; font-family: inherit;
-          transition: border-color 0.2s, box-shadow 0.2s;
-          outline: none;
+          transition: border-color 0.2s, box-shadow 0.2s; outline: none;
         }
-        .answer-textarea:focus {
-          border-color: #4f46e5;
-          box-shadow: 0 0 0 3px #4f46e520;
-        }
+        .answer-textarea:focus { border-color: #4f46e5; box-shadow: 0 0 0 3px #4f46e520; }
         .answer-textarea:disabled { opacity: 0.5; cursor: not-allowed; }
         .answer-textarea::placeholder { color: #334155; }
         .submit-btn {
@@ -332,7 +304,6 @@ export default function SessionDetailPage() {
         .submit-btn:not(:disabled):hover { transform: translateY(-1px); box-shadow: 0 8px 28px #4f46e550; }
       `}</style>
 
-      {/* ── breadcrumb & title ── */}
       <div style={{ marginBottom: 32 }}>
         <div style={{ fontSize: 12, color: '#475569', marginBottom: 6, display: 'flex', gap: 6, alignItems: 'center' }}>
           <Link to="/" style={{ color: '#64748b', textDecoration: 'none' }}>Home</Link>
@@ -361,7 +332,6 @@ export default function SessionDetailPage() {
         </div>
       </div>
 
-      {/* ── progress ── */}
       <div style={{ marginBottom: 32 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#64748b', marginBottom: 8 }}>
           <span>Progress</span>
@@ -371,10 +341,8 @@ export default function SessionDetailPage() {
         </div>
         <div style={{ height: 6, background: '#0f172a', borderRadius: 999, overflow: 'hidden', border: '1px solid #1e293b' }}>
           <div style={{
-            height: '100%',
-            background: 'linear-gradient(90deg,#4f46e5,#7c3aed)',
-            borderRadius: 999,
-            width: `${progress}%`,
+            height: '100%', background: 'linear-gradient(90deg,#4f46e5,#7c3aed)',
+            borderRadius: 999, width: `${progress}%`,
             transition: 'width 0.7s cubic-bezier(.4,0,.2,1)',
           }} />
         </div>
@@ -382,25 +350,23 @@ export default function SessionDetailPage() {
           {Array.from({ length: session.total_questions }).map((_, i) => (
             <div key={i} style={{
               flex: 1, height: 3, borderRadius: 999,
-              background:
-                i < session.current_question_index || isCompleted ? '#4f46e5'
-                : i === session.current_question_index ? '#7c3aed'
-                : '#1e293b',
+              background: i < session.current_question_index || isCompleted ? '#4f46e5'
+                : i === session.current_question_index ? '#7c3aed' : '#1e293b',
               transition: 'background 0.4s',
             }} />
           ))}
         </div>
       </div>
 
-      {/* ── COMPLETED ── */}
       {isCompleted ? (
         <div style={{
           padding: '48px 32px', borderRadius: 24, textAlign: 'center',
           background: 'linear-gradient(135deg,#052e16,#0f172a)',
-          border: '1px solid #16a34a30',
-          animation: 'fadeIn 0.5s ease',
+          border: '1px solid #16a34a30', animation: 'fadeIn 0.5s ease',
         }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>🎉</div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+            <CheckCircle2 style={{ width: 56, height: 56, color: '#4ade80' }} />
+          </div>
           <h2 style={{ margin: '0 0 8px', fontSize: 24, fontWeight: 800, color: '#4ade80' }}>
             Interview Complete!
           </h2>
@@ -414,18 +380,16 @@ export default function SessionDetailPage() {
             padding: '12px 28px', borderRadius: 12, fontWeight: 700, fontSize: 14,
             boxShadow: '0 4px 24px #4f46e540',
           }}>
-            Start New Session →
+            Start New Session <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
       ) : (
         <>
-          {/* ── current question ── */}
           {session.current_question && (
             <div style={{
               padding: '24px 28px', borderRadius: 20, marginBottom: 20,
               background: 'linear-gradient(135deg,#1e1b4b30,#0f172a)',
-              border: '1px solid #4f46e540',
-              boxShadow: '0 8px 32px #4f46e510',
+              border: '1px solid #4f46e540', boxShadow: '0 8px 32px #4f46e510',
               animation: 'slideUp 0.35s cubic-bezier(.4,0,.2,1)',
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
@@ -442,7 +406,6 @@ export default function SessionDetailPage() {
             </div>
           )}
 
-          {/* ── answer form (hidden during feedback) ── */}
           {phase !== 'feedback' && (
             <form onSubmit={handleSubmit} style={{ marginBottom: 8, animation: 'fadeIn 0.3s' }}>
               <textarea
@@ -457,7 +420,7 @@ export default function SessionDetailPage() {
               />
               {submitError && (
                 <p style={{ color: '#f87171', fontSize: 13, margin: '8px 0 0', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  ⚠️ {submitError}
+                  <AlertTriangle className="w-4 h-4" /> {submitError}
                 </p>
               )}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12 }}>
@@ -466,23 +429,15 @@ export default function SessionDetailPage() {
                 </span>
                 <button type="submit" className="submit-btn" disabled={phase === 'submitting' || !answer.trim()}>
                   {phase === 'submitting' ? (
-                    <>
-                      <svg style={{ width: 16, height: 16, animation: 'spin 1s linear infinite' }} fill="none" viewBox="0 0 24 24">
-                        <circle opacity=".25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path opacity=".75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                      </svg>
-                      Evaluating…
-                    </>
-                  ) : <>Submit Answer →</>}
+                    <><Loader2 className="w-4 h-4 animate-spin" /> Evaluating…</>
+                  ) : <>Submit Answer <ChevronRight className="w-4 h-4" /></>}
                 </button>
               </div>
             </form>
           )}
 
-          {/* ── feedback panel + next button ── */}
           {phase === 'feedback' && lastFeedback && (
             <>
-              {/* show the answer that was submitted (read-only) */}
               <div style={{
                 background: '#0f172a', border: '1px solid #1e293b',
                 borderRadius: 14, padding: '14px 18px', marginBottom: 4,
@@ -490,17 +445,12 @@ export default function SessionDetailPage() {
               }}>
                 {answer}
               </div>
-              <FeedbackPanel
-                fb={lastFeedback}
-                onNext={handleNext}
-                isLast={isLastQuestion}
-              />
+              <FeedbackPanel fb={lastFeedback} onNext={handleNext} isLast={isLastQuestion} />
             </>
           )}
         </>
       )}
 
-      {/* ── questions list ── */}
       {session.questions.length > 0 && (
         <div style={{ marginTop: 40 }}>
           <p style={{ fontSize: 11, fontWeight: 700, color: '#334155', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 12 }}>
@@ -508,17 +458,11 @@ export default function SessionDetailPage() {
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {session.questions.map((q, i) => (
-              <QuestionListItem
-                key={q.id} question={q} index={i}
-                currentIndex={session.current_question_index}
-              />
+              <QuestionListItem key={q.id} question={q} index={i} currentIndex={session.current_question_index} />
             ))}
           </div>
         </div>
       )}
-
-      {/* spin keyframe (tailwind doesn't inject it inline) */}
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </Layout>
   )
 }
