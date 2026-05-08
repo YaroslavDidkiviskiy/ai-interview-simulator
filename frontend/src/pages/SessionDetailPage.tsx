@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Flag, ChevronRight, AlertTriangle, Loader2, CheckCircle2 } from 'lucide-react'
+import { Flag, ChevronRight, AlertTriangle, Loader2, CheckCircle2, Zap } from 'lucide-react'
 import Layout from '../components/Layout'
 import {
   FeedbackDto,
@@ -64,7 +64,9 @@ function DifficultyBadge({ level }: { level: number }) {
       border: `1px solid ${fg}30`,
       borderRadius: 999, padding: '2px 10px',
       fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
+      display: 'inline-flex', alignItems: 'center', gap: 3,
     }}>
+      <Zap style={{ width: 10, height: 10 }} />
       {level}
     </span>
   )
@@ -428,9 +430,10 @@ export default function SessionDetailPage() {
                   {answer.trim().length} / 5000
                 </span>
                 <button type="submit" className="submit-btn" disabled={phase === 'submitting' || !answer.trim()}>
-                  {phase === 'submitting' ? (
-                    <><Loader2 className="w-4 h-4 animate-spin" /> Evaluating…</>
-                  ) : <>Submit Answer <ChevronRight className="w-4 h-4" /></>}
+                  {phase === 'submitting'
+                    ? <><Loader2 className="w-4 h-4 animate-spin" /> Evaluating…</>
+                    : <>Submit Answer <ChevronRight className="w-4 h-4" /></>
+                  }
                 </button>
               </div>
             </form>
