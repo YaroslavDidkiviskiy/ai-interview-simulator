@@ -13,6 +13,9 @@ class Settings(BaseSettings):
         alias="DATABASE_URL"
     )
 
+    backend_url: str = Field(default="http://localhost:8000", alias="BACKEND_URL")
+    frontend_url: str = Field(default="http://localhost", alias="FRONTEND_URL")
+    
     evaluator_provider: str = Field(default="fallback", alias="EVALUATOR_PROVIDER")
     ollama_base_url: str = Field(default="http://localhost:11434", alias="OLLAMA_BASE_URL")
     ollama_model: str = Field(default="llama3.2:3b", alias="OLLAMA_MODEL")
