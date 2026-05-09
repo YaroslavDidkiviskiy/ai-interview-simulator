@@ -13,9 +13,22 @@ class Settings(BaseSettings):
         alias="DATABASE_URL"
     )
 
+    backend_url: str = Field(default="http://localhost:8000", alias="BACKEND_URL")
+    frontend_url: str = Field(default="http://localhost", alias="FRONTEND_URL")
+    
     evaluator_provider: str = Field(default="fallback", alias="EVALUATOR_PROVIDER")
     ollama_base_url: str = Field(default="http://localhost:11434", alias="OLLAMA_BASE_URL")
     ollama_model: str = Field(default="llama3.2:3b", alias="OLLAMA_MODEL")
+
+    secret_key: str = Field(default="change-me-in-production", alias="SECRET_KEY")
+    access_expire_min: int = Field(default=30, alias="ACCESS_EXPIRE_MIN")
+    refresh_expire_days: int = Field(default=7, alias="REFRESH_EXPIRE_DAYS")
+
+    github_client_secret: str = Field(default="change-me-in-production", alias="GITHUB_CLIENT_SECRET")
+    google_client_secret: str = Field(default="change-me-in-production", alias="GOOGLE_CLIENT_SECRET")
+
+    github_client_id: str = Field(default="", alias="GITHUB_CLIENT_ID")
+    google_client_id: str = Field(default="", alias="GOOGLE_CLIENT_ID")
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -23,10 +36,6 @@ class Settings(BaseSettings):
         extra="ignore",
         populate_by_name=True,
     )
-
-    secret_key: str = Field(default="change-me-in-production", alias="SECRET_KEY")
-    access_expire_min: int = Field(default=30, alias="ACCESS_EXPIRE_MIN")
-    refresh_expire_days: int = Field(default=7, alias="REFRESH_EXPIRE_DAYS")
 
 
 @lru_cache

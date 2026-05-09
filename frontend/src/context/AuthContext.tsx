@@ -25,9 +25,26 @@ function formatApiDetail(detail: unknown): string | null {
   return null
 }
 
+function getOAuthTokenFromCookie(): string | null {
+  const match = document.cookie.match(/(?:^|;\s*)oauth_access_token=([^;]*)/)
+  if (!match) return null
+  const token = decodeURIComponent(match[1])
+  // одразу очищаємо cookie — токен переїжджає в localStorage
+  document.cookie = 'oauth_access_token=; max-age=0; path=/'
+  return token
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('access_token'))
+  const [token, setToken] = useState<string | null>(() => {
+    // спочатку перевіряємо OAuth cookie (після редіректу від Google/GitHub)
+    const oauthToken = getOAuthTokenFromCookie()
+    if (oauthToken) {
+      localStorage.setItem('access_token', oauthToken)
+      return oauthToken
+    }
+    return localStorage.getItem('access_token')
+  })
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -51,9 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => {
         if (!cancelled) setIsLoading(false)
       })
-    return () => {
-      cancelled = true
-    }
+    return () => { cancelled = true }
   }, [])
 
   async function login(email: string, password: string) {
