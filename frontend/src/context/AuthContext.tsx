@@ -25,15 +25,22 @@ function formatApiDetail(detail: unknown): string | null {
   return null
 }
 
+function getOAuthTokenFromCookie(): string | null {
+  const match = document.cookie.match(/(?:^|;\s*)oauth_access_token=([^;]*)/)
+  if (!match) return null
+  const token = decodeURIComponent(match[1])
+  // одразу очищаємо cookie — токен переїжджає в localStorage
+  document.cookie = 'oauth_access_token=; max-age=0; path=/'
+  return token
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [token, setToken] = useState<string | null>(() => {
-    // перевіряємо OAuth токен з URL при першому рендері
-    const params = new URLSearchParams(window.location.search)
-    const oauthToken = params.get('access_token')
+    // спочатку перевіряємо OAuth cookie (після редіректу від Google/GitHub)
+    const oauthToken = getOAuthTokenFromCookie()
     if (oauthToken) {
       localStorage.setItem('access_token', oauthToken)
-      window.history.replaceState({}, '', window.location.pathname)
       return oauthToken
     }
     return localStorage.getItem('access_token')
