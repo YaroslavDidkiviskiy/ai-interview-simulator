@@ -27,7 +27,17 @@ function formatApiDetail(detail: unknown): string | null {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('access_token'))
+  const [token, setToken] = useState<string | null>(() => {
+    // перевіряємо OAuth токен з URL при першому рендері
+    const params = new URLSearchParams(window.location.search)
+    const oauthToken = params.get('access_token')
+    if (oauthToken) {
+      localStorage.setItem('access_token', oauthToken)
+      window.history.replaceState({}, '', window.location.pathname)
+      return oauthToken
+    }
+    return localStorage.getItem('access_token')
+  })
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -51,9 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => {
         if (!cancelled) setIsLoading(false)
       })
-    return () => {
-      cancelled = true
-    }
+    return () => { cancelled = true }
   }, [])
 
   async function login(email: string, password: string) {
