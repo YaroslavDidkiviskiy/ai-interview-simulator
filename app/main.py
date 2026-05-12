@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from app.config import get_settings
 from app.auth.router import router as auth_router
 from app.auth.oauth import router as oauth_router
-from app.routers import sessions_router, answers_router, health_router, users_router
+from app.routers import sessions_router, answers_router, health_router, users_router, stats_router
 
 settings = get_settings()
 
@@ -20,3 +20,4 @@ app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(oauth_router)
 app.include_router(users_router)
+app.include_router(stats_router)
