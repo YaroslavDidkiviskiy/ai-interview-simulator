@@ -46,6 +46,8 @@ const TOPIC_WORD: Record<string, string> = {
   cicd: 'CI/CD',
   ci: 'CI',
   cd: 'CD',
+  csharp: "C#",
+  cplusplus: "C++",
   grpc: 'gRPC',
   graphql: 'GraphQL',
   aws: 'AWS',
