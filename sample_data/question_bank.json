@@ -289,5 +289,852 @@
     "topic": "security",
     "difficulty": 4,
     "question": "How do you secure a REST API?"
+  },
+
+  {
+    "role": "typescript",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "typescript",
+    "difficulty": 1,
+    "question": "What are the basic types in TypeScript and how do you declare a variable with a type?"
+  },
+  {
+    "role": "typescript",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "javascript",
+    "difficulty": 1,
+    "question": "What is the difference between == and === in JavaScript?"
+  },
+  {
+    "role": "typescript",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 2,
+    "question": "What is a class in TypeScript and how do you create an instance?"
+  },
+  {
+    "role": "typescript",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "async",
+    "difficulty": 2,
+    "question": "What is a Promise and how do you use .then() and .catch()?"
+  },
+  {
+    "role": "typescript",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "rest",
+    "difficulty": 1,
+    "question": "What is REST and what are the common HTTP methods used in RESTful APIs?"
+  },
+  {
+    "role": "typescript",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "typescript",
+    "difficulty": 3,
+    "question": "Explain generics in TypeScript and give an example of a generic function."
+  },
+  {
+    "role": "typescript",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "javascript",
+    "difficulty": 3,
+    "question": "What are closures in JavaScript and how can they be used?"
+  },
+  {
+    "role": "typescript",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 3,
+    "question": "What is the difference between abstract classes and interfaces in TypeScript?"
+  },
+  {
+    "role": "typescript",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "async",
+    "difficulty": 3,
+    "question": "Explain how async/await works in TypeScript and how it differs from Promises."
+  },
+  {
+    "role": "typescript",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "rest",
+    "difficulty": 3,
+    "question": "How do you handle error responses in a REST API built with TypeScript (e.g., using Express)?"
+  },
+  {
+    "role": "typescript",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "typescript",
+    "difficulty": 4,
+    "question": "Explain advanced TypeScript features like conditional types and mapped types."
+  },
+  {
+    "role": "typescript",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "javascript",
+    "difficulty": 4,
+    "question": "How does the event loop work in JavaScript, and how does it affect asynchronous programming?"
+  },
+  {
+    "role": "typescript",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 4,
+    "question": "Discuss SOLID principles and how they apply to TypeScript development."
+  },
+  {
+    "role": "typescript",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "async",
+    "difficulty": 4,
+    "question": "How would you handle concurrent API requests and avoid race conditions in a TypeScript backend?"
+  },
+  {
+    "role": "typescript",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "rest",
+    "difficulty": 5,
+    "question": "Design a REST API versioning strategy for a large-scale TypeScript application."
+  },
+
+  {
+    "role": "java",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "java",
+    "difficulty": 1,
+    "question": "What is the difference between JDK, JRE, and JVM?"
+  },
+  {
+    "role": "java",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 2,
+    "question": "What is inheritance in Java and how do you implement it?"
+  },
+  {
+    "role": "java",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "spring",
+    "difficulty": 2,
+    "question": "What is dependency injection in Spring?"
+  },
+  {
+    "role": "java",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "sql",
+    "difficulty": 1,
+    "question": "How do you write a SQL query to select all columns from a table named 'users'?"
+  },
+  {
+    "role": "java",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "multithreading",
+    "difficulty": 2,
+    "question": "What is a thread in Java and how can you create one?"
+  },
+  {
+    "role": "java",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "java",
+    "difficulty": 3,
+    "question": "Explain the difference between ArrayList and LinkedList in Java."
+  },
+  {
+    "role": "java",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 3,
+    "question": "What is polymorphism in Java and how is it achieved?"
+  },
+  {
+    "role": "java",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "spring",
+    "difficulty": 3,
+    "question": "What are Spring Boot starters and how do they simplify configuration?"
+  },
+  {
+    "role": "java",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "sql",
+    "difficulty": 3,
+    "question": "Explain the difference between WHERE and HAVING clauses in SQL."
+  },
+  {
+    "role": "java",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "multithreading",
+    "difficulty": 3,
+    "question": "What is the synchronized keyword in Java and how does it help with thread safety?"
+  },
+  {
+    "role": "java",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "java",
+    "difficulty": 4,
+    "question": "How does the Java memory model work? Explain heap, stack, and garbage collection."
+  },
+  {
+    "role": "java",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 4,
+    "question": "Discuss design patterns commonly used in Java, such as Singleton, Factory, and Observer."
+  },
+  {
+    "role": "java",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "spring",
+    "difficulty": 4,
+    "question": "How would you design a microservices architecture using Spring Boot and Spring Cloud?"
+  },
+  {
+    "role": "java",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "sql",
+    "difficulty": 4,
+    "question": "How do you optimize a SQL query that is performing slowly? Mention indexing, query planning."
+  },
+  {
+    "role": "java",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "multithreading",
+    "difficulty": 4,
+    "question": "What are the differences between Runnable and Callable, and how do you use ExecutorService for thread management?"
+  },
+
+  {
+    "role": "kotlin",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "kotlin",
+    "difficulty": 1,
+    "question": "What are the main differences between Kotlin and Java?"
+  },
+  {
+    "role": "kotlin",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 2,
+    "question": "How do you define a class and a data class in Kotlin?"
+  },
+  {
+    "role": "kotlin",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "coroutines",
+    "difficulty": 2,
+    "question": "What is a coroutine in Kotlin and how is it different from a thread?"
+  },
+  {
+    "role": "kotlin",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "android",
+    "difficulty": 2,
+    "question": "What is an Activity in Android and what is its lifecycle?"
+  },
+  {
+    "role": "kotlin",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "sql",
+    "difficulty": 1,
+    "question": "How do you perform a simple SELECT query using Room database in Android?"
+  },
+  {
+    "role": "kotlin",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "kotlin",
+    "difficulty": 3,
+    "question": "Explain extension functions in Kotlin and give an example."
+  },
+  {
+    "role": "kotlin",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 3,
+    "question": "What are sealed classes in Kotlin and when would you use them?"
+  },
+  {
+    "role": "kotlin",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "coroutines",
+    "difficulty": 3,
+    "question": "Explain the concept of structured concurrency in Kotlin coroutines."
+  },
+  {
+    "role": "kotlin",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "android",
+    "difficulty": 3,
+    "question": "What is the difference between ViewModel and AndroidViewModel?"
+  },
+  {
+    "role": "kotlin",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "sql",
+    "difficulty": 3,
+    "question": "How do you handle database migrations in Room?"
+  },
+  {
+    "role": "kotlin",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "kotlin",
+    "difficulty": 4,
+    "question": "How do you implement custom DSLs in Kotlin? Give an example."
+  },
+  {
+    "role": "kotlin",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 4,
+    "question": "Discuss the benefits of using Kotlin's delegation pattern over inheritance."
+  },
+  {
+    "role": "kotlin",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "coroutines",
+    "difficulty": 4,
+    "question": "How do you manage coroutine exception handling and cancellation in complex workflows?"
+  },
+  {
+    "role": "kotlin",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "android",
+    "difficulty": 4,
+    "question": "What is the recommended architecture for modern Android apps (e.g., MVVM, Clean Architecture) and how does Kotlin support it?"
+  },
+  {
+    "role": "kotlin",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "sql",
+    "difficulty": 4,
+    "question": "How would you optimize database performance in a Room-based Android application with large datasets?"
+  },
+
+  {
+    "role": "go",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "go",
+    "difficulty": 1,
+    "question": "What is a goroutine and how do you start one?"
+  },
+  {
+    "role": "go",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 2,
+    "question": "What is a channel in Go and how is it used for communication between goroutines?"
+  },
+  {
+    "role": "go",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "rest",
+    "difficulty": 2,
+    "question": "How do you create a simple HTTP server in Go using the net/http package?"
+  },
+  {
+    "role": "go",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "docker",
+    "difficulty": 2,
+    "question": "What is Docker and why is it used with Go applications?"
+  },
+  {
+    "role": "go",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "testing",
+    "difficulty": 1,
+    "question": "How do you write a simple test function in Go?"
+  },
+  {
+    "role": "go",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "go",
+    "difficulty": 3,
+    "question": "Explain the difference between a pointer and a value receiver in Go methods."
+  },
+  {
+    "role": "go",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 3,
+    "question": "How do you use select statement to handle multiple channels?"
+  },
+  {
+    "role": "go",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "rest",
+    "difficulty": 3,
+    "question": "How do you handle JSON serialization and deserialization in Go?"
+  },
+  {
+    "role": "go",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "docker",
+    "difficulty": 3,
+    "question": "How do you create a multi-stage Dockerfile for a Go application?"
+  },
+  {
+    "role": "go",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "testing",
+    "difficulty": 3,
+    "question": "What are table-driven tests in Go and why are they useful?"
+  },
+  {
+    "role": "go",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "go",
+    "difficulty": 4,
+    "question": "How does Go's garbage collector work, and how can you optimize memory usage?"
+  },
+  {
+    "role": "go",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 4,
+    "question": "Explain fan-in/fan-out concurrency patterns in Go and their use cases."
+  },
+  {
+    "role": "go",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "rest",
+    "difficulty": 4,
+    "question": "Design a REST API with middleware for logging, authentication, and rate limiting in Go."
+  },
+  {
+    "role": "go",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "docker",
+    "difficulty": 4,
+    "question": "How would you orchestrate multiple Go microservices using Docker Compose or Kubernetes?"
+  },
+  {
+    "role": "go",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "testing",
+    "difficulty": 4,
+    "question": "How do you benchmark functions in Go and interpret the results?"
+  },
+
+  {
+    "role": "rust",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "rust",
+    "difficulty": 1,
+    "question": "What are the basic data types in Rust?"
+  },
+  {
+    "role": "rust",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "memory",
+    "difficulty": 1,
+    "question": "What is ownership in Rust and why is it important?"
+  },
+  {
+    "role": "rust",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "ownership",
+    "difficulty": 2,
+    "question": "What is borrowing and the difference between mutable and immutable references?"
+  },
+  {
+    "role": "rust",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 2,
+    "question": "How do you spawn a thread in Rust?"
+  },
+  {
+    "role": "rust",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "systems",
+    "difficulty": 2,
+    "question": "What is Cargo and how do you create a new Rust project?"
+  },
+  {
+    "role": "rust",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "rust",
+    "difficulty": 3,
+    "question": "Explain lifetimes in Rust and why they are needed."
+  },
+  {
+    "role": "rust",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "memory",
+    "difficulty": 3,
+    "question": "What is the difference between Box, Rc, and Arc smart pointers?"
+  },
+  {
+    "role": "rust",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "ownership",
+    "difficulty": 3,
+    "question": "How does Rust ensure memory safety without a garbage collector?"
+  },
+  {
+    "role": "rust",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 3,
+    "question": "How do you share state between threads using Mutex and Arc?"
+  },
+  {
+    "role": "rust",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "systems",
+    "difficulty": 3,
+    "question": "How do you interface Rust with C code using FFI?"
+  },
+  {
+    "role": "rust",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "rust",
+    "difficulty": 4,
+    "question": "Explain the concept of zero-cost abstractions in Rust with examples."
+  },
+  {
+    "role": "rust",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "memory",
+    "difficulty": 4,
+    "question": "How do you write unsafe Rust and when is it necessary?"
+  },
+  {
+    "role": "rust",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "ownership",
+    "difficulty": 4,
+    "question": "Discuss the borrow checker's rules and how to design data structures that satisfy them."
+  },
+  {
+    "role": "rust",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 4,
+    "question": "How do you implement async/await in Rust using tokio or async-std?"
+  },
+  {
+    "role": "rust",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "systems",
+    "difficulty": 4,
+    "question": "How would you build a high-performance network service in Rust, utilizing async I/O?"
+  },
+
+  {
+    "role": "cpp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "cpp",
+    "difficulty": 1,
+    "question": "What is the difference between C and C++?"
+  },
+  {
+    "role": "cpp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "memory",
+    "difficulty": 1,
+    "question": "What are pointers and references in C++?"
+  },
+  {
+    "role": "cpp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 2,
+    "question": "What is a class in C++ and how do you define a constructor?"
+  },
+  {
+    "role": "cpp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "stl",
+    "difficulty": 2,
+    "question": "What is the vector container in C++ STL and how do you add elements?"
+  },
+  {
+    "role": "cpp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 2,
+    "question": "How do you create a simple thread using std::thread?"
+  },
+  {
+    "role": "cpp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "cpp",
+    "difficulty": 3,
+    "question": "Explain RAII (Resource Acquisition Is Initialization) and why it's important."
+  },
+  {
+    "role": "cpp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "memory",
+    "difficulty": 3,
+    "question": "What is the difference between stack and heap memory allocation in C++?"
+  },
+  {
+    "role": "cpp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 3,
+    "question": "What are virtual functions and how do they enable polymorphism?"
+  },
+  {
+    "role": "cpp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "stl",
+    "difficulty": 3,
+    "question": "What is the difference between std::map and std::unordered_map?"
+  },
+  {
+    "role": "cpp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 3,
+    "question": "How do you use std::mutex and std::lock_guard to protect shared data?"
+  },
+  {
+    "role": "cpp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "cpp",
+    "difficulty": 4,
+    "question": "Explain move semantics and perfect forwarding in C++11/14/17."
+  },
+  {
+    "role": "cpp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "memory",
+    "difficulty": 4,
+    "question": "How do you detect and avoid memory leaks in large C++ applications?"
+  },
+  {
+    "role": "cpp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 4,
+    "question": "Discuss the use of design patterns like Singleton, Observer, and Factory in C++."
+  },
+  {
+    "role": "cpp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "stl",
+    "difficulty": 4,
+    "question": "How do you use template metaprogramming with STL?"
+  },
+  {
+    "role": "cpp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 5,
+    "question": "How do you design a lock-free data structure and what are the challenges?"
+  },
+
+  {
+    "role": "csharp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "csharp",
+    "difficulty": 1,
+    "question": "What is the difference between .NET Framework and .NET Core?"
+  },
+  {
+    "role": "csharp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "dotnet",
+    "difficulty": 2,
+    "question": "What is ASP.NET and how do you create a simple Web API?"
+  },
+  {
+    "role": "csharp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 2,
+    "question": "What is inheritance in C# and how do you use the 'base' keyword?"
+  },
+  {
+    "role": "csharp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "async",
+    "difficulty": 2,
+    "question": "What is the async and await keywords in C# and how do they work?"
+  },
+  {
+    "role": "csharp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "sql",
+    "difficulty": 1,
+    "question": "How do you execute a SQL query using ADO.NET?"
+  },
+  {
+    "role": "csharp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "csharp",
+    "difficulty": 3,
+    "question": "Explain delegates and events in C#."
+  },
+  {
+    "role": "csharp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "dotnet",
+    "difficulty": 3,
+    "question": "What is middleware in ASP.NET Core and how do you create custom middleware?"
+  },
+  {
+    "role": "csharp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 3,
+    "question": "What are interfaces and abstract classes in C#, and when to use each?"
+  },
+  {
+    "role": "csharp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "async",
+    "difficulty": 3,
+    "question": "How does the Task Parallel Library (TPL) help with asynchronous programming?"
+  },
+  {
+    "role": "csharp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "sql",
+    "difficulty": 3,
+    "question": "How do you use Entity Framework Core to perform LINQ queries?"
+  },
+  {
+    "role": "csharp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "csharp",
+    "difficulty": 4,
+    "question": "Explain garbage collection in .NET and how you can optimize it."
+  },
+  {
+    "role": "csharp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "dotnet",
+    "difficulty": 4,
+    "question": "How would you design a microservices architecture using .NET and Docker?"
+  },
+  {
+    "role": "csharp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 4,
+    "question": "Discuss SOLID principles with examples in C#."
+  },
+  {
+    "role": "csharp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "async",
+    "difficulty": 4,
+    "question": "How do you handle exceptions in asynchronous methods and avoid deadlocks?"
+  },
+  {
+    "role": "csharp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "sql",
+    "difficulty": 5,
+    "question": "How do you optimize Entity Framework queries for performance in a high-load system?"
   }
 ]
