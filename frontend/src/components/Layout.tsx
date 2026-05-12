@@ -23,28 +23,29 @@ export default function Layout({ children, variant = 'default' }: Props) {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950">
+      {/* ── HEADER ── */}
       <header className="border-b border-slate-800/60 backdrop-blur-sm sticky top-0 z-10 bg-slate-950/90 shrink-0">
         <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between gap-3">
 
           <Link to="/" className="flex items-center shrink-0 group">
             <span className="font-black text-xl tracking-tight">
-              <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent group-hover:from-indigo-300 group-hover:to-violet-300 transition-all duration-300">prep</span>
-              <span className="bg-gradient-to-r from-indigo-400 to-violet-500 bg-clip-text text-transparent">ario</span>
+              <span className="bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                prep
+              </span>
+              <span className="bg-gradient-to-r from-indigo-400 to-violet-500 bg-clip-text text-transparent">
+                ario
+              </span>
             </span>
           </Link>
 
           <div className="flex items-center gap-2 text-sm">
             {user ? (
               <>
-                <span
-                  className="hidden sm:block text-slate-500 truncate max-w-[180px] text-xs"
-                  title={user.email}
-                >
+                <span className="hidden sm:block text-slate-500 truncate max-w-[180px] text-xs">
                   {user.email}
                 </span>
                 <div className="w-px h-4 bg-slate-800 hidden sm:block" />
                 <button
-                  type="button"
                   onClick={handleLogout}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all text-sm"
                 >
@@ -55,7 +56,7 @@ export default function Layout({ children, variant = 'default' }: Props) {
             ) : (
               <Link
                 to="/login"
-                className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-all text-sm shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30"
+                className="px-4 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm"
               >
                 Sign in
               </Link>
@@ -65,7 +66,18 @@ export default function Layout({ children, variant = 'default' }: Props) {
         </div>
       </header>
 
+      {/* ── MAIN ── */}
       <main className={mainClass}>{children}</main>
+
+      {/* ── FOOTER ── */}
+      <footer className="border-t border-slate-800 pt-8 pb-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600 max-w-4xl mx-auto w-full px-6">
+        <span>© 2026 Prepario. All rights reserved.</span>
+        <div className="flex items-center gap-4">
+          <a href="#" className="hover:text-slate-400 transition-colors">Terms</a>
+          <a href="#" className="hover:text-slate-400 transition-colors">Privacy</a>
+          <a href="#" className="hover:text-slate-400 transition-colors">Security</a>
+        </div>
+      </footer>
     </div>
   )
 }
