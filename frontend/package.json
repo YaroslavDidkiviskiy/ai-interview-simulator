@@ -13,7 +13,8 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",
     "devicons-react": "^1.2.0",
-    "lucide-react": "^0.400.0"
+    "lucide-react": "^0.400.0",
+    "@radix-ui/react-slider": "^1.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
