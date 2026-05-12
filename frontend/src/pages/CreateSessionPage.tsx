@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import * as Slider from '@radix-ui/react-slider'
 import Layout from '../components/Layout'
 import { createSession } from '../api/client'
 import {
@@ -15,7 +14,8 @@ import {
 } from 'devicons-react'
 import { Users, ArrowLeft, Loader2, AlertCircle } from 'lucide-react'
 
-type Category =
+// ─── types ────────────────────────────────────────────────────────────────────
+ type Category =
   | 'python_backend'
   | 'hr'
   | 'java'
@@ -26,7 +26,7 @@ type Category =
   | 'cpp'
   | 'csharp'
 
-interface CategoryCard {
+ interface CategoryCard {
   id: Category
   label: string
   icon: React.ReactNode
@@ -34,7 +34,8 @@ interface CategoryCard {
   description: string
 }
 
-const CATEGORIES: CategoryCard[] = [
+// ─── config ───────────────────────────────────────────────────────────────────
+ const CATEGORIES: CategoryCard[] = [
   {
     id: 'python_backend',
     label: 'Python Backend',
@@ -100,18 +101,19 @@ const CATEGORIES: CategoryCard[] = [
   },
 ]
 
-const LEVELS = [
+ const LEVELS = [
   { value: 'junior', label: 'Junior' },
   { value: 'mid', label: 'Mid' },
   { value: 'senior', label: 'Senior' },
 ]
 
-const TYPES = [
+ const TYPES = [
   { value: 'technical', label: 'Technical' },
   { value: 'mixed', label: 'Mixed' },
 ]
 
-export default function CreateSessionPage() {
+// ─── component ────────────────────────────────────────────────────────────────
+ export default function CreateSessionPage() {
   const navigate = useNavigate()
 
   const [category, setCategory] = useState<Category | null>(null)
@@ -148,11 +150,10 @@ export default function CreateSessionPage() {
   return (
     <Layout>
       <div className="max-w-2xl mx-auto">
+
+        {/* back – як посилання "My sessions" на головній */}
         {step === 1 ? (
-          <Link
-            to="/"
-            className="inline-flex items-center gap-1.5 text-slate-400 hover:text-slate-200 text-sm font-medium transition-colors mb-8"
-          >
+          <Link to="/" className="inline-flex items-center gap-1.5 text-slate-400 hover:text-slate-200 text-sm font-medium transition-colors mb-8">
             <ArrowLeft className="w-4 h-4" />
             Back
           </Link>
@@ -170,6 +171,7 @@ export default function CreateSessionPage() {
           </button>
         )}
 
+        {/* STEP 1 – вибір категорії */}
         {step === 1 && (
           <>
             <h1 className="text-3xl font-bold text-white mb-1">New Interview</h1>
@@ -194,6 +196,7 @@ export default function CreateSessionPage() {
           </>
         )}
 
+        {/* STEP 2 – налаштування */}
         {step === 2 && category && (
           <>
             <h1 className="text-3xl font-bold text-white mb-8">
@@ -208,6 +211,8 @@ export default function CreateSessionPage() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-7">
+
+              {/* Level – стиль як у мов на HomePage */}
               {!isHR && (
                 <div className="flex gap-2">
                   {LEVELS.map(l => (
@@ -227,6 +232,7 @@ export default function CreateSessionPage() {
                 </div>
               )}
 
+              {/* Interview Type – такий самий стиль */}
               {!isHR && (
                 <div className="flex gap-2">
                   {TYPES.map(t => (
@@ -246,34 +252,23 @@ export default function CreateSessionPage() {
                 </div>
               )}
 
+              {/* Questions slider – акуратні підписи */}
               <div>
                 <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">
-                  Questions:{' '}
-                  <span className="text-indigo-400 font-bold normal-case text-sm">
-                    {totalQuestions}
-                  </span>
+                  Questions: <span className="text-indigo-400 font-bold normal-case text-sm">{totalQuestions}</span>
                 </label>
-
-                <div className="relative">
-                  <Slider.Root
-                    className="relative flex items-center select-none touch-none w-full h-5"
-                    value={[totalQuestions]}
-                    onValueChange={(val) => setTotalQuestions(val[0])}
-                    min={1}
-                    max={10}
-                    step={1}
-                  >
-                    <Slider.Track className="bg-slate-800 relative grow rounded-full h-1.5">
-                      <Slider.Range className="absolute bg-indigo-500 rounded-full h-full" />
-                    </Slider.Track>
-                    <Slider.Thumb className="block w-4 h-4 bg-white shadow-md rounded-full hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900" />
-                  </Slider.Root>
-
-                  <div className="absolute inset-x-0 top-full mt-1.5 pointer-events-none">
-                    <span className="absolute left-0 -translate-x-1/2 text-xs text-slate-600">1</span>
-                    <span className="absolute left-[44.44%] -translate-x-1/2 text-xs text-slate-600">5</span>
-                    <span className="absolute left-full -translate-x-1/2 text-xs text-slate-600">10</span>
-                  </div>
+                <input
+                  type="range"
+                  min={1}
+                  max={10}
+                  value={totalQuestions}
+                  onChange={(e) => setTotalQuestions(Number(e.target.value))}
+                  className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer accent-indigo-500"
+                />
+                <div className="flex justify-between text-xs text-slate-600 mt-2">
+                  <span>1</span>
+                  <span>5</span>
+                  <span>10</span>
                 </div>
               </div>
 
@@ -284,9 +279,11 @@ export default function CreateSessionPage() {
               >
                 {loading ? <Loader2 className="animate-spin mx-auto" /> : 'Start Interview'}
               </button>
+
             </form>
           </>
         )}
+
       </div>
     </Layout>
   )

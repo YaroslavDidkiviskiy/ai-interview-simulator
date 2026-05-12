@@ -136,7 +136,7 @@ export default function HomePage() {
         }
       `}</style>
 
-      {/* ── Hero ── */}
+      {/* HERO */}
       <div className="relative flex flex-col items-center text-center pt-16 pb-20">
         <div className="glow-bg" />
 
@@ -165,6 +165,7 @@ export default function HomePage() {
             Start Interview
             <ArrowRight className="w-5 h-5" />
           </Link>
+
           {user && (
             <Link
               to="/dashboard"
@@ -176,49 +177,46 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── Stats ── */}
+      {/* STATS */}
       <div className="border border-slate-800 rounded-2xl bg-slate-900/40 p-8 mb-20">
         <div className="grid grid-cols-3 gap-8">
-          <StatCard
-            value={stats ? `${stats.total_questions}+` : '36+'}
-            label="Interview Questions"
-          />
-          <StatCard
-            value={stats ? `${stats.total_sessions}+` : '0'}
-            label="Sessions Completed"
-          />
-          <StatCard
-            value={stats ? `${stats.total_answers}+` : '0'}
-            label="Answers Evaluated"
-          />
+          <StatCard value={stats ? `${stats.total_questions}+` : '36+'} label="Interview Questions" />
+          <StatCard value={stats ? `${stats.total_sessions}+` : '0'} label="Sessions Completed" />
+          <StatCard value={stats ? `${stats.total_answers}+` : '0'} label="Answers Evaluated" />
         </div>
       </div>
 
-      {/* ── Features ── */}
+      {/* FEATURES */}
       <div className="mb-20">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-white mb-3">Everything you need to prepare</h2>
-          <p className="text-slate-400 max-w-sm mx-auto">All the tools to land your next developer role in one place.</p>
+          <p className="text-slate-400 max-w-sm mx-auto">
+            All the tools to land your next developer role in one place.
+          </p>
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {features.map((f) => (
             <div key={f.title} className="card p-6 hover:border-slate-700 hover:bg-slate-800/50 transition-all group">
               <div className="mb-4 w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center group-hover:scale-110 transition-transform">
                 {f.icon}
               </div>
-              <h3 className="font-semibold text-slate-100 mb-2 group-hover:text-white transition-colors">{f.title}</h3>
+              <h3 className="font-semibold text-slate-100 mb-2 group-hover:text-white transition-colors">
+                {f.title}
+              </h3>
               <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* ── Languages ── */}
+      {/* LANGUAGES */}
       <div className="mb-20">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-white mb-3">Supported roles</h2>
           <p className="text-slate-400 max-w-sm mx-auto">More languages and roles coming soon.</p>
         </div>
+
         <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
           {languages.map((lang) => (
             <div
@@ -229,7 +227,7 @@ export default function HomePage() {
                   : 'border-slate-800 bg-slate-900/30 opacity-40'
               }`}
             >
-              {!lang.available && (
+              {lang.available ? null : (
                 <span className="absolute -top-1.5 -right-1.5 text-[9px] font-bold bg-slate-800 text-slate-500 px-1.5 py-0.5 rounded-full border border-slate-700">
                   Soon
                 </span>
@@ -241,12 +239,15 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── Testimonials ── */}
+      {/* TESTIMONIALS */}
       <div className="mb-20">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-white mb-3">What developers say</h2>
-          <p className="text-slate-400 max-w-sm mx-auto">Real feedback from developers who used Prepario.</p>
+          <p className="text-slate-400 max-w-sm mx-auto">
+            Real feedback from developers who used Prepario.
+          </p>
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {testimonials.map((t) => (
             <div key={t.name} className="card p-6 flex flex-col gap-4">
@@ -259,7 +260,9 @@ export default function HomePage() {
                   />
                 ))}
               </div>
+
               <p className="text-slate-300 text-sm leading-relaxed flex-1">"{t.text}"</p>
+
               <div>
                 <div className="font-semibold text-slate-100 text-sm">{t.name}</div>
                 <div className="text-xs text-slate-500">{t.role}</div>
@@ -270,28 +273,20 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── CTA ── */}
-      <div className="relative rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/10 to-violet-500/10 p-12 text-center mb-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-violet-500/5" />
-        <h2 className="text-3xl font-bold text-white mb-4 relative">Ready to get hired?</h2>
-        <p className="text-slate-400 mb-8 relative max-w-sm mx-auto">
-          Start practicing today and walk into your next interview with confidence.
-        </p>
-        <Link to="/sessions/create" className="btn-primary px-10 py-4 text-base relative">
-          Start for free
-          <ArrowRight className="w-5 h-5" />
-        </Link>
-      </div>
-
-      {/* ── Footer ── */}
-      <footer className="border-t border-slate-800 pt-8 pb-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600">
-        <span>© 2026 Prepario. All rights reserved.</span>
-        <div className="flex items-center gap-4">
-          <a href="#" className="hover:text-slate-400 transition-colors">Terms</a>
-          <a href="#" className="hover:text-slate-400 transition-colors">Privacy</a>
-          <a href="#" className="hover:text-slate-400 transition-colors">Security</a>
+      {/* CTA */}
+      {!user && (
+        <div className="relative rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/10 to-violet-500/10 p-12 text-center mb-20 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-violet-500/5" />
+          <h2 className="text-3xl font-bold text-white mb-4 relative">Ready to get hired?</h2>
+          <p className="text-slate-400 mb-8 relative max-w-sm mx-auto">
+            Start practicing today and walk into your next interview with confidence.
+          </p>
+          <Link to="/sessions/create" className="btn-primary px-10 py-4 text-base relative">
+            Start for free
+            <ArrowRight className="w-5 h-5" />
+          </Link>
         </div>
-      </footer>
+      )}
     </Layout>
   )
 }
