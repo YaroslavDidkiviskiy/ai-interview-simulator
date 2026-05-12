@@ -116,7 +116,7 @@ export default function RegisterPage() {
                 type="password" value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="input-base w-full"
-                placeholder="********"
+                placeholder="••••••••"
                 required minLength={8} autoComplete="new-password"
               />
               <p className="mt-1.5 text-xs text-slate-500">
