@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+from sqlalchemy import func, cast, Float
 from sqlalchemy.orm import Session
 
 from app.models.question import Question
@@ -50,9 +52,8 @@ class InterviewEngine:
         db.add_all(question_rows)
         db.commit()
         db.refresh(interview_session)
-
         return interview_session
-    
+
     def submit_answer(
         self,
         db: Session,
@@ -99,10 +100,17 @@ class InterviewEngine:
             better_answer=evaluation["better_answer"],
         )
         db.add(feedback)
+        db.flush()
 
         session_obj.current_question_index += 1
         if session_obj.current_question_index >= session_obj.total_questions:
             session_obj.status = "completed"
+            session_obj.completed_at = datetime.now(timezone.utc)
+
+            avg = db.query(cast(func.avg(Feedback.score), Float)).filter(
+                Feedback.session_id == session_id
+            ).scalar()
+            session_obj.final_score = round(avg) if avg is not None else 0
 
         db.commit()
         db.refresh(answer)
