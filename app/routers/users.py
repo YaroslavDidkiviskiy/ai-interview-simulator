@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, cast, Float, distinct
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta, timezone
 
 from app.db import get_db
+from app.auth.security import verify_password, hash_password
+from app.schemas.user import ChangePasswordRequest
 from app.models.feedback import Feedback
 from app.models.question import Question
 from app.models.session import InterviewSession
@@ -18,6 +20,23 @@ router = APIRouter(prefix="/api/users", tags=["users"])
 @router.get("/me", response_model=MeResponse)
 def me(current_user: User = Depends(get_current_user)):
     return {"id": current_user.id, "email": current_user.email, "role": current_user.role.value}
+
+
+@router.put("/me/password")
+def change_password(
+    body: ChangePasswordRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if not verify_password(body.current_password, current_user.password):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+
+    if body.current_password == body.new_password:
+        raise HTTPException(status_code=400, detail="New password must differ from current password")
+
+    current_user.password = hash_password(body.new_password)
+    db.commit()
+    return {"ok": True}
 
 
 @router.get("/me/sessions", response_model=list[SessionRead])
@@ -68,7 +87,7 @@ def get_my_stats(
         .filter(
             InterviewSession.user_id == uid,
             InterviewSession.status == "completed",
-        )
+        )     
         .group_by(InterviewSession.role)
         .order_by(func.count(InterviewSession.id).desc())
         .all()
