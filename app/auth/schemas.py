@@ -2,6 +2,8 @@ import string
 
 from pydantic import Field, BaseModel, EmailStr, field_validator
 
+from app.schemas.user import validate_password_complexity
+
 
 class RegisterRequest(BaseModel):
     email: EmailStr
@@ -9,14 +11,8 @@ class RegisterRequest(BaseModel):
 
     @field_validator("password")
     @classmethod
-    def validate_password_complexity(cls, v: str) -> str:
-        if not any(c.isupper() for c in v):
-            raise ValueError("Password must contain at least one uppercase letter")
-        if not any(c.isdigit() for c in v):
-            raise ValueError("Password must contain at least 1 number")
-        if not any(c in string.punctuation for c in v):
-            raise ValueError("Password must contain at least one punctuation symbol")
-        return v
+    def validate_password(cls, v: str) -> str:
+        return validate_password_complexity(v)
 
 
 class LoginResponse(BaseModel):
