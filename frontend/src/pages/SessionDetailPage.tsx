@@ -213,6 +213,7 @@ export default function SessionDetailPage() {
   const [phase, setPhase] = useState<Phase>('answering')
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [lastFeedback, setLastFeedback] = useState<FeedbackDto | null>(null)
+  const [isLastQuestion, setIsLastQuestion] = useState(false)  // <-- додано
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const fetchSession = useCallback(() => {
@@ -228,6 +229,7 @@ export default function SessionDetailPage() {
     setLastFeedback(null)
     setAnswer('')
     setPhase('answering')
+    setIsLastQuestion(false)  // <-- скидаємо
     fetchSession()
     setTimeout(() => textareaRef.current?.focus(), 100)
   }
@@ -248,6 +250,7 @@ export default function SessionDetailPage() {
         status: res.session_status ?? prev.status,
         current_question_index: res.current_question_index,
       } : prev)
+      setIsLastQuestion(res.session_status === 'completed')  // <-- визначаємо по бекенду
       setPhase('feedback')
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Something went wrong')
@@ -275,7 +278,6 @@ export default function SessionDetailPage() {
   const isCompleted = session.status === 'completed' && phase !== 'feedback'
   const shownIndex = isCompleted ? session.total_questions : session.current_question_index
   const progress = Math.round((shownIndex / session.total_questions) * 100)
-  const isLastQuestion = session.current_question_index === session.total_questions - 1
 
   return (
     <Layout>
