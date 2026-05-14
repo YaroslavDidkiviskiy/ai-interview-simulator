@@ -14,12 +14,13 @@ from app.auth.security import (
     hash_password, verify_password,
 )
 from app.auth.dependencies import get_current_user
+from app.rate_limiter import rate_limit_login, rate_limit_register
 
 settings = get_settings()
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/register", status_code=status.HTTP_201_CREATED)
+@router.post("/register", status_code=status.HTTP_201_CREATED, dependencies=[Depends(rate_limit_register)])
 def register(body: RegisterRequest, db: Session = Depends(get_db)):
     if db.query(User).filter(User.email == body.email).first():
         raise HTTPException(status_code=409, detail="Email already registered")
@@ -30,7 +31,7 @@ def register(body: RegisterRequest, db: Session = Depends(get_db)):
     return {"id": user.id, "email": user.email}
 
 
-@router.post("/login", response_model=LoginResponse)
+@router.post("/login", response_model=LoginResponse, dependencies=[Depends(rate_limit_login)])
 def login(
     response: Response,
     form: OAuth2PasswordRequestForm = Depends(),
