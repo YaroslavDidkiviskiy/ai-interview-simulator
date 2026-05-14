@@ -7,6 +7,7 @@ from app.models.session import InterviewSession
 from app.schemas.answer import AnswerCreateSchema
 from app.schemas.feedback import FeedbackRead
 from app.services.interview_engine import InterviewEngine
+from app.rate_limiter import rate_limit_answers
 
 router = APIRouter(prefix="/api/sessions/{session_id}/answers", tags=["answers"])
 
