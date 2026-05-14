@@ -36,20 +36,19 @@ def _redirect_with_tokens(user: User, db: Session) -> RedirectResponse:
     ))
     db.commit()
 
-    # редіректимо на фронт, токен кладемо в cookie а не в URL
     response = RedirectResponse(url=FRONTEND_URL, status_code=302)
 
-    # access token — читається JS (не httpOnly) щоб фронт міг забрати
+    # access token
     response.set_cookie(
         key="oauth_access_token",
         value=access_token,
         httponly=False,
         secure=not settings.debug,
         samesite="lax",
-        max_age=60 * 30,  # 30 хвилин, одноразовий
+        max_age=60 * 30,
         path="/",
     )
-    # refresh token — httpOnly, JS не бачить
+    # refresh token — httpOnly
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
