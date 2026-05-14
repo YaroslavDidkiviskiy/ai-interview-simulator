@@ -125,10 +125,10 @@ export default function LoginPage() {
           </div>
 
           <div style={{ display: 'flex', gap: 12 }}>
-            <a href="http://localhost:8000/auth/github" className="oauth-btn">
+            <a href="/auth/github" className="oauth-btn">
               <GithubIcon /> GitHub
             </a>
-            <a href="http://localhost:8000/auth/google" className="oauth-btn">
+            <a href="/auth/google" className="oauth-btn">
               <GoogleIcon /> Google
             </a>
           </div>
