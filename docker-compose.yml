@@ -47,11 +47,14 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://postgres:postgres@db:5432/ai_interview_simulator
       OLLAMA_BASE_URL: http://ollama:11434
+      REDIS_URL: redis://redis_container:6379/0
     depends_on:
       db:
         condition: service_healthy
       ollama-init:
         condition: service_completed_successfully
+      redis_container:
+        condition: service_healthy
 
   frontend:
     build: ./frontend
@@ -59,7 +62,27 @@ services:
       - "80:80"
     depends_on:
       - app
+    
+  redis_gui:
+    image: redis/redisinsight:latest
+    ports:
+      - "5540:5540"
+    depends_on:
+      - redis_container
+
+  redis_container:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
 
 volumes:
   pgdata: {}
   ollama_data: {}
+  redis_data: {}
