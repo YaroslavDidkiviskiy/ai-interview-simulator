@@ -13,6 +13,8 @@ class Settings(BaseSettings):
         alias="DATABASE_URL"
     )
 
+    redis_url: str = Field(default="redis://localhost:6379/0", alias="REDIS_URL")
+
     backend_url: str = Field(default="http://localhost:8000", alias="BACKEND_URL")
     frontend_url: str = Field(default="http://localhost", alias="FRONTEND_URL")
     
