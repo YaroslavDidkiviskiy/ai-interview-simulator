@@ -12,7 +12,7 @@ async function refreshToken(): Promise<string | null> {
   return data.access_token
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const token = getToken()
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -48,14 +48,10 @@ function asRecord(h: HeadersInit | undefined): Record<string, string> {
   if (!h) return {}
   if (h instanceof Headers) {
     const o: Record<string, string> = {}
-    h.forEach((v, k) => {
-      o[k] = v
-    })
+    h.forEach((v, k) => { o[k] = v })
     return o
   }
-  if (Array.isArray(h)) {
-    return Object.fromEntries(h)
-  }
+  if (Array.isArray(h)) return Object.fromEntries(h)
   return { ...h }
 }
 
@@ -121,6 +117,16 @@ export interface SubmitAnswerResponse {
   current_question_index: number
 }
 
+export interface ProfileStats {
+  total_sessions: number
+  completed_sessions: number
+  avg_score: number
+  role_stats: { role: string; count: number; avg_score: number }[]
+  weak_topics: { topic: string; avg_score: number; count: number }[]
+  activity: Record<string, number>
+  achievements: { id: string; title: string; desc: string; unlocked: boolean; icon: string }[]
+}
+
 export function createSession(data: CreateSessionPayload): Promise<Session> {
   return request('/sessions/', { method: 'POST', body: JSON.stringify(data) })
 }
@@ -131,4 +137,19 @@ export function getSession(id: number): Promise<SessionDetail> {
 
 export function submitAnswer(sessionId: number, data: SubmitAnswerPayload): Promise<SubmitAnswerResponse> {
   return request(`/sessions/${sessionId}/answers/`, { method: 'POST', body: JSON.stringify(data) })
+}
+
+export function getMySessions(page: number, limit: number): Promise<Session[]> {
+  return request(`/users/me/sessions?page=${page}&limit=${limit}`)
+}
+
+export function getMyStats(): Promise<ProfileStats> {
+  return request('/users/me/stats')
+}
+
+export function changePassword(current_password: string, new_password: string): Promise<{ ok: boolean }> {
+  return request('/users/me/password', {
+    method: 'PUT',
+    body: JSON.stringify({ current_password, new_password }),
+  })
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Layout from '../components/Layout'
 import { toast } from '../components/Toast'
+import { changePassword } from '../api/client'
 import { Loader2, AlertCircle, KeyRound, Bell, Shield, Trash2, ChevronRight } from 'lucide-react'
 
 type Section = 'password' | null
@@ -105,17 +106,13 @@ function SettingsRow({
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <div style={{
-          width: 34, height: 34, borderRadius: 9,
-          background: '#1e293b',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          flexShrink: 0,
+          width: 34, height: 34, borderRadius: 9, background: '#1e293b',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
         }}>
           {icon}
         </div>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0', marginBottom: 2 }}>
-            {title}
-          </div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0', marginBottom: 2 }}>{title}</div>
           <div style={{ fontSize: 12, color: '#475569' }}>{desc}</div>
         </div>
       </div>
@@ -174,40 +171,12 @@ function ChangePasswordForm({ onSuccess }: { onSuccess: () => void }) {
     }
 
     setLoading(true)
-
     try {
-      const token = localStorage.getItem('access_token')
-
-      const res = await fetch('/api/users/me/password', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token ?? ''}`,
-        },
-        body: JSON.stringify({
-          current_password: current,
-          new_password: next,
-        }),
-      })
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({
-          detail: 'Something went wrong',
-        }))
-
-        throw new Error(
-          typeof err.detail === 'string'
-            ? err.detail
-            : 'Something went wrong'
-        )
-      }
-
+      await changePassword(current, next)
       toast('Password changed successfully!', 'success')
-
       setCurrent('')
       setNext('')
       setConfirm('')
-
       setTimeout(() => onSuccess(), 300)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
@@ -238,7 +207,6 @@ function ChangePasswordForm({ onSuccess }: { onSuccess: () => void }) {
           <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: '#64748b', marginBottom: 5 }}>
             {field.label}
           </label>
-
           <input
             type="password"
             value={field.value}

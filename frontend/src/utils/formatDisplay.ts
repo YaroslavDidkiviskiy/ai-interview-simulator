@@ -53,6 +53,8 @@ const TOPIC_WORD: Record<string, string> = {
   aws: 'AWS',
   gcp: 'GCP',
   nosql: 'NoSQL',
+  hr: 'HR',
+  any: "HR Interview",
 }
 
 function capitalizeWord(word: string): string {
@@ -76,6 +78,7 @@ export function formatTopicLabel(raw: string): string {
 
 /** Role slug: "python_backend" → "Python Backend" */
 export function formatRoleLabel(role: string): string {
+  if (role === 'any') return 'HR Interview'
   return role
     .split('_')
     .filter(Boolean)
@@ -84,6 +87,7 @@ export function formatRoleLabel(role: string): string {
 }
 
 export function formatLevelLabel(level: string): string {
+  if (level === 'any') return ''
   return LEVEL_LABEL[level.toLowerCase()] ?? capitalizeWord(level)
 }
 
