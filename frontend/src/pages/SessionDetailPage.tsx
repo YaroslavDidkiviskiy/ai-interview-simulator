@@ -3,18 +3,12 @@ import { Link, useParams } from 'react-router-dom'
 import { Flag, ChevronRight, AlertTriangle, Loader2, CheckCircle2, Zap } from 'lucide-react'
 import Layout from '../components/Layout'
 import {
-  FeedbackDto,
-  getSession,
-  Question,
-  SessionDetail,
-  submitAnswer,
+  FeedbackDto, getSession, getQuestionFeedback,
+  Question, SessionDetail, submitAnswer,
 } from '../api/client'
 import {
-  formatInterviewTypeLabel,
-  formatLevelLabel,
-  formatRoleLabel,
-  formatSessionStatus,
-  formatTopicLabel,
+  formatInterviewTypeLabel, formatLevelLabel,
+  formatRoleLabel, formatSessionStatus, formatTopicLabel,
 } from '../utils/formatDisplay'
 
 function scoreColor(v: number) {
@@ -26,7 +20,6 @@ function scoreColor(v: number) {
 function ScoreRing({ value, label }: { value: number; label: string }) {
   const r = 20
   const circ = 2 * Math.PI * r
-  const pct = value / 10
   return (
     <div className="flex flex-col items-center gap-1">
       <svg width="52" height="52" viewBox="0 0 52 52">
@@ -35,7 +28,7 @@ function ScoreRing({ value, label }: { value: number; label: string }) {
           cx="26" cy="26" r={r} fill="none"
           stroke={scoreColor(value)} strokeWidth="5"
           strokeDasharray={circ}
-          strokeDashoffset={circ * (1 - pct)}
+          strokeDashoffset={circ * (1 - value / 10)}
           strokeLinecap="round"
           transform="rotate(-90 26 26)"
           style={{ transition: 'stroke-dashoffset 0.8s cubic-bezier(.4,0,.2,1)' }}
@@ -60,56 +53,52 @@ function DifficultyBadge({ level }: { level: number }) {
   const [fg, bg] = map[level] ?? map[3]
   return (
     <span style={{
-      background: bg, color: fg,
-      border: `1px solid ${fg}30`,
+      background: bg, color: fg, border: `1px solid ${fg}30`,
       borderRadius: 999, padding: '2px 10px',
       fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
       display: 'inline-flex', alignItems: 'center', gap: 3,
     }}>
-      <Zap style={{ width: 10, height: 10 }} />
-      {level}
+      <Zap style={{ width: 10, height: 10 }} />{level}
     </span>
   )
 }
 
 function TopicBadge({ topic }: { topic: string }) {
-  const label = formatTopicLabel(topic)
   return (
     <span title={topic} style={{
       background: '#1e1b4b40', color: '#c7d2fe',
       border: '1px solid #4f46e545', borderRadius: 999,
       padding: '3px 11px', fontSize: 11, fontWeight: 600, letterSpacing: '0.02em',
     }}>
-      {label}
+      {formatTopicLabel(topic)}
     </span>
   )
 }
 
-function FeedbackPanel({ fb, onNext, isLast }: { fb: FeedbackDto; onNext: () => void; isLast: boolean }) {
+function FeedbackPanel({ fb, answerText }: { fb: FeedbackDto; answerText: string }) {
   return (
     <div style={{
-      marginTop: 24,
+      marginTop: 16,
       background: 'linear-gradient(135deg,#0c1929 0%,#0f172a 100%)',
       border: '1px solid #1d4ed840', borderRadius: 20,
       padding: '28px 28px 24px',
       animation: 'slideUp 0.4s cubic-bezier(.4,0,.2,1)',
     }}>
+      <div style={{ marginBottom: 20, padding: '12px 16px', background: '#0f172a', border: '1px solid #1e293b', borderRadius: 12, fontSize: 14, color: '#64748b', lineHeight: 1.6 }}>
+        {answerText}
+      </div>
       <div style={{ display: 'flex', gap: 20, justifyContent: 'center', marginBottom: 24 }}>
         <ScoreRing value={fb.score} label="Overall" />
         <ScoreRing value={fb.correctness_score} label="Correct" />
         <ScoreRing value={fb.clarity_score} label="Clarity" />
         <ScoreRing value={fb.confidence_score} label="Confidence" />
       </div>
-
       <p style={{ color: '#cbd5e1', lineHeight: 1.7, marginBottom: 20, fontSize: 14 }}>
         {fb.feedback_text}
       </p>
-
       {fb.missing_points.length > 0 && (
         <div style={{ marginBottom: 16 }}>
-          <p style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>
-            Missing points
-          </p>
+          <p style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Missing points</p>
           <ul style={{ paddingLeft: 18, margin: 0 }}>
             {fb.missing_points.map((p, i) => (
               <li key={i} style={{ color: '#f87171', fontSize: 13, marginBottom: 4 }}>{p}</li>
@@ -117,12 +106,9 @@ function FeedbackPanel({ fb, onNext, isLast }: { fb: FeedbackDto; onNext: () => 
           </ul>
         </div>
       )}
-
       {fb.better_answer.length > 0 && (
-        <div style={{ marginBottom: 24 }}>
-          <p style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>
-            Stronger answer ideas
-          </p>
+        <div>
+          <p style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Stronger answer ideas</p>
           <ul style={{ paddingLeft: 18, margin: 0 }}>
             {fb.better_answer.map((p, i) => (
               <li key={i} style={{ color: '#86efac', fontSize: 13, marginBottom: 4 }}>{p}</li>
@@ -130,80 +116,87 @@ function FeedbackPanel({ fb, onNext, isLast }: { fb: FeedbackDto; onNext: () => 
           </ul>
         </div>
       )}
-
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button onClick={onNext} style={{
-          display: 'flex', alignItems: 'center', gap: 8,
-          background: 'linear-gradient(135deg,#4f46e5,#7c3aed)',
-          color: '#fff', border: 'none', borderRadius: 12,
-          padding: '12px 28px', fontWeight: 700, fontSize: 14,
-          cursor: 'pointer', letterSpacing: '0.02em',
-          boxShadow: '0 4px 24px #4f46e540',
-          transition: 'transform 0.15s, box-shadow 0.15s',
-        }}
-          onMouseEnter={e => {
-            (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)'
-            ;(e.currentTarget as HTMLButtonElement).style.boxShadow = '0 8px 32px #4f46e560'
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLButtonElement).style.transform = ''
-            ;(e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 24px #4f46e540'
-          }}
-        >
-          {isLast
-            ? <><Flag className="w-4 h-4" /> Finish Interview</>
-            : <>Next Question <ChevronRight className="w-4 h-4" /></>
-          }
-        </button>
-      </div>
     </div>
   )
 }
 
-function QuestionListItem({ question, index, currentIndex }: {
-  question: Question; index: number; currentIndex: number
+function QuestionListItem({
+  question, index, isAnswered, isActive, onClick,
+}: {
+  question: Question
+  index: number
+  isAnswered: boolean
+  isActive: boolean
+  onClick: () => void
 }) {
-  const isCurrent = index === currentIndex
-  const isPast = index < currentIndex
   return (
-    <div style={{
-      display: 'flex', alignItems: 'flex-start', gap: 12,
-      padding: '12px 16px', borderRadius: 14,
-      background: isCurrent ? '#1e1b4b30' : isPast ? '#0f172a60' : '#0f172a',
-      border: `1px solid ${isCurrent ? '#6366f150' : isPast ? '#1e293b50' : '#1e293b'}`,
-      opacity: isPast ? 0.55 : 1, transition: 'all 0.2s',
-    }}>
-      <div style={{
-        width: 26, height: 26, borderRadius: '50%', flexShrink: 0, marginTop: 2,
+    <div
+      onClick={onClick}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 12,
+        padding: '14px 16px', borderRadius: 14, cursor: 'pointer',
+        background: isActive ? '#1e1b4b30' : '#0f172a',
+        border: `1px solid ${isActive ? '#6366f150' : isAnswered ? '#4ade8020' : '#1e293b'}`,
+        transition: 'all 0.2s',
+      }}
+      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = isActive ? '#6366f170' : '#4f46e540' }}
+      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = isActive ? '#6366f150' : isAnswered ? '#4ade8020' : '#1e293b' }}
+    >
+      {/* number / checkmark */}
+      {isAnswered ? (
+       <div style={{
+        width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+        background: '#052e16',
+        border: '1px solid #4ade8040',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 11, fontWeight: 700,
-        background: isCurrent ? '#4f46e5' : isPast ? '#1e293b' : '#0f172a',
-        border: isCurrent ? 'none' : '1px solid #334155',
-        color: isCurrent ? '#fff' : isPast ? '#94a3b8' : '#475569',
       }}>
-        {isPast
-          ? <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" />
-          : index + 1
-        }
+        <CheckCircle2 size={16} strokeWidth={2} color='#4ade80' />
       </div>
+      ) : (
+        <div style={{
+          width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+          display: 'grid', placeItems: 'center',
+          background: isActive ? '#4f46e5' : '#0f172a',
+          border: isActive ? 'none' : '1px solid #334155',
+        }}>
+          <span style={{
+            fontSize: 11, fontWeight: 700,
+            color: isActive ? '#fff' : '#475569',
+            lineHeight: 1, display: 'block',
+          }}>{index + 1}</span>
+        </div>
+      )}
+      {/* text content */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', gap: 6, marginBottom: 4, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 6, marginBottom: 5, flexWrap: 'wrap' }}>
           <TopicBadge topic={question.topic} />
           <DifficultyBadge level={question.difficulty} />
         </div>
         <p style={{
           margin: 0, fontSize: 13, lineHeight: 1.4,
-          color: isCurrent ? '#e2e8f0' : '#64748b',
+          color: isActive ? '#e2e8f0' : isAnswered ? '#94a3b8' : '#64748b',
           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
         }}>
           {question.text}
         </p>
       </div>
+
+      {/* done badge */}
+      {isAnswered && (
+        <span style={{
+          fontSize: 10, color: '#4ade80', fontWeight: 700,
+          flexShrink: 0, letterSpacing: '0.05em',
+          background: '#052e1660', border: '1px solid #4ade8030',
+          padding: '2px 8px', borderRadius: 999,
+        }}>
+          Done
+        </span>
+      )}
     </div>
   )
 }
 
-type Phase = 'answering' | 'submitting' | 'feedback'
+type Phase = 'answering' | 'submitting' | 'feedback' | 'loading_feedback'
 
 export default function SessionDetailPage() {
   const { sessionId } = useParams<{ sessionId: string }>()
@@ -213,44 +206,66 @@ export default function SessionDetailPage() {
   const [phase, setPhase] = useState<Phase>('answering')
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [lastFeedback, setLastFeedback] = useState<FeedbackDto | null>(null)
-  const [isLastQuestion, setIsLastQuestion] = useState(false)  // <-- додано
+  const [lastAnswerText, setLastAnswerText] = useState('')
+  const [activeQuestion, setActiveQuestion] = useState<Question | null>(null)
+  const [isLastQuestion, setIsLastQuestion] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const fetchSession = useCallback(() => {
     if (!sessionId) return
-    getSession(Number(sessionId))
-      .then(setSession)
-      .catch(() => setError('Session not found'))
+    getSession(Number(sessionId)).then(data => {
+      setSession(data)
+      setActiveQuestion(prev => {
+        if (prev) return prev
+        return data.questions.find(q => !data.answered_question_ids.includes(q.id)) ?? data.questions[0] ?? null
+      })
+    }).catch(() => setError('Session not found'))
   }, [sessionId])
 
   useEffect(() => { fetchSession() }, [fetchSession])
 
-  function handleNext() {
-    setLastFeedback(null)
+  async function handleQuestionClick(question: Question) {
+    if (!session) return
+    const isAnswered = session.answered_question_ids.includes(question.id)
+    setActiveQuestion(question)
     setAnswer('')
-    setPhase('answering')
-    setIsLastQuestion(false)  // <-- скидаємо
-    fetchSession()
-    setTimeout(() => textareaRef.current?.focus(), 100)
+    setLastFeedback(null)
+    setSubmitError(null)
+    if (isAnswered) {
+      setPhase('loading_feedback')
+      try {
+        const data = await getQuestionFeedback(Number(sessionId), question.id)
+        setLastFeedback(data.feedback)
+        setLastAnswerText(data.answer_text)
+        setPhase('feedback')
+      } catch {
+        setPhase('answering')
+      }
+    } else {
+      setPhase('answering')
+      setTimeout(() => textareaRef.current?.focus(), 100)
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!session?.current_question || !answer.trim()) return
+    if (!activeQuestion || !answer.trim()) return
     setSubmitError(null)
     setPhase('submitting')
     try {
       const res = await submitAnswer(Number(sessionId), {
-        question_id: session.current_question.id,
+        question_id: activeQuestion.id,
         text: answer.trim(),
       })
       setLastFeedback(res.feedback)
+      setLastAnswerText(answer.trim())
       setSession(prev => prev ? {
         ...prev,
         status: res.session_status ?? prev.status,
         current_question_index: res.current_question_index,
+        answered_question_ids: [...prev.answered_question_ids, activeQuestion.id],
       } : prev)
-      setIsLastQuestion(res.session_status === 'completed')  // <-- визначаємо по бекенду
+      setIsLastQuestion(res.session_status === 'completed')
       setPhase('feedback')
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : 'Something went wrong')
@@ -276,14 +291,15 @@ export default function SessionDetailPage() {
   )
 
   const isCompleted = session.status === 'completed' && phase !== 'feedback'
-  const shownIndex = isCompleted ? session.total_questions : session.current_question_index
+  const shownIndex = session.answered_question_ids.length
   const progress = Math.round((shownIndex / session.total_questions) * 100)
+  const level = formatLevelLabel(session.level)
 
   return (
     <Layout>
       <style>{`
-        @keyframes slideUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+        @keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
         .answer-textarea {
           width: 100%; box-sizing: border-box;
           background: #0f172a; color: #e2e8f0;
@@ -320,8 +336,7 @@ export default function SessionDetailPage() {
               {formatRoleLabel(session.role)}
             </h1>
             <p style={{ margin: '4px 0 0', fontSize: 13, color: '#94a3b8', fontWeight: 500 }}>
-              {formatLevelLabel(session.level)}
-              <span style={{ margin: '0 0.5em', color: '#475569' }}>·</span>
+              {level && <>{level}<span style={{ margin: '0 0.5em', color: '#475569' }}>·</span></>}
               {formatInterviewTypeLabel(session.interview_type)}
             </p>
           </div>
@@ -346,19 +361,22 @@ export default function SessionDetailPage() {
         <div style={{ height: 6, background: '#0f172a', borderRadius: 999, overflow: 'hidden', border: '1px solid #1e293b' }}>
           <div style={{
             height: '100%', background: 'linear-gradient(90deg,#4f46e5,#7c3aed)',
-            borderRadius: 999, width: `${progress}%`,
+            borderRadius: 999, width: `${isCompleted ? 100 : progress}%`,
             transition: 'width 0.7s cubic-bezier(.4,0,.2,1)',
           }} />
         </div>
         <div style={{ display: 'flex', gap: 4, marginTop: 6 }}>
-          {Array.from({ length: session.total_questions }).map((_, i) => (
-            <div key={i} style={{
-              flex: 1, height: 3, borderRadius: 999,
-              background: i < session.current_question_index || isCompleted ? '#4f46e5'
-                : i === session.current_question_index ? '#7c3aed' : '#1e293b',
-              transition: 'background 0.4s',
-            }} />
-          ))}
+          {session.questions.map(q => {
+            const isAnswered = session.answered_question_ids.includes(q.id)
+            const isActive = activeQuestion?.id === q.id
+            return (
+              <div key={q.id} style={{
+                flex: 1, height: 3, borderRadius: 999,
+                background: isAnswered ? '#4ade80' : isActive ? '#7c3aed' : '#1e293b',
+                transition: 'background 0.4s',
+              }} />
+            )
+          })}
         </div>
       </div>
 
@@ -377,19 +395,19 @@ export default function SessionDetailPage() {
           <p style={{ color: '#64748b', marginBottom: 32, fontSize: 15 }}>
             You answered all {session.total_questions} questions.
           </p>
-          <Link to="/" style={{
+          <Link to="/dashboard" style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
             background: 'linear-gradient(135deg,#4f46e5,#7c3aed)',
             color: '#fff', textDecoration: 'none',
             padding: '12px 28px', borderRadius: 12, fontWeight: 700, fontSize: 14,
             boxShadow: '0 4px 24px #4f46e540',
           }}>
-            Start New Session <ChevronRight className="w-4 h-4" />
+            View My Sessions <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
       ) : (
         <>
-          {session.current_question && (
+          {activeQuestion && (
             <div style={{
               padding: '24px 28px', borderRadius: 20, marginBottom: 20,
               background: 'linear-gradient(135deg,#1e1b4b30,#0f172a)',
@@ -398,19 +416,25 @@ export default function SessionDetailPage() {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
                 <span style={{ fontSize: 11, fontWeight: 800, color: '#818cf8', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                  Question {session.current_question_index + 1} of {session.total_questions}
+                  Question {session.questions.findIndex(q => q.id === activeQuestion.id) + 1} of {session.total_questions}
                 </span>
                 <span style={{ color: '#1e293b' }}>·</span>
-                <TopicBadge topic={session.current_question.topic} />
-                <DifficultyBadge level={session.current_question.difficulty} />
+                <TopicBadge topic={activeQuestion.topic} />
+                <DifficultyBadge level={activeQuestion.difficulty} />
               </div>
               <p style={{ margin: 0, fontSize: 20, fontWeight: 700, color: '#f1f5f9', lineHeight: 1.45, letterSpacing: '-0.01em' }}>
-                {session.current_question.text}
+                {activeQuestion.text}
               </p>
             </div>
           )}
 
-          {phase !== 'feedback' && (
+          {phase === 'loading_feedback' && (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 0', color: '#475569', gap: 10 }}>
+              <Loader2 className="w-5 h-5 animate-spin" /> Loading feedback…
+            </div>
+          )}
+
+          {(phase === 'answering' || phase === 'submitting') && activeQuestion && !session.answered_question_ids.includes(activeQuestion.id) && (
             <form onSubmit={handleSubmit} style={{ marginBottom: 8, animation: 'fadeIn 0.3s' }}>
               <textarea
                 ref={textareaRef}
@@ -431,27 +455,25 @@ export default function SessionDetailPage() {
                 <span style={{ fontSize: 11, color: '#334155', fontVariantNumeric: 'tabular-nums' }}>
                   {answer.trim().length} / 5000
                 </span>
-                <button type="submit" className="submit-btn" disabled={phase === 'submitting' || !answer.trim()}>
-                  {phase === 'submitting'
-                    ? <><Loader2 className="w-4 h-4 animate-spin" /> Evaluating…</>
-                    : <>Submit Answer <ChevronRight className="w-4 h-4" /></>
-                  }
-                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  {isLastQuestion && (
+                    <span style={{ fontSize: 12, color: '#4ade80', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <Flag style={{ width: 13, height: 13 }} /> Last question!
+                    </span>
+                  )}
+                  <button type="submit" className="submit-btn" disabled={phase === 'submitting' || !answer.trim()}>
+                    {phase === 'submitting'
+                      ? <><Loader2 className="w-4 h-4 animate-spin" /> Evaluating…</>
+                      : <>Submit Answer <ChevronRight className="w-4 h-4" /></>
+                    }
+                  </button>
+                </div>
               </div>
             </form>
           )}
 
           {phase === 'feedback' && lastFeedback && (
-            <>
-              <div style={{
-                background: '#0f172a', border: '1px solid #1e293b',
-                borderRadius: 14, padding: '14px 18px', marginBottom: 4,
-                fontSize: 14, color: '#64748b', lineHeight: 1.6,
-              }}>
-                {answer}
-              </div>
-              <FeedbackPanel fb={lastFeedback} onNext={handleNext} isLast={isLastQuestion} />
-            </>
+            <FeedbackPanel fb={lastFeedback} answerText={lastAnswerText} />
           )}
         </>
       )}
@@ -463,7 +485,14 @@ export default function SessionDetailPage() {
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {session.questions.map((q, i) => (
-              <QuestionListItem key={q.id} question={q} index={i} currentIndex={session.current_question_index} />
+              <QuestionListItem
+                key={q.id}
+                question={q}
+                index={i}
+                isAnswered={session.answered_question_ids.includes(q.id)}
+                isActive={activeQuestion?.id === q.id}
+                onClick={() => handleQuestionClick(q)}
+              />
             ))}
           </div>
         </div>
