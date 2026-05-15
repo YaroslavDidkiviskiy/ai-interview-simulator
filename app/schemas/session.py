@@ -39,3 +39,4 @@ class SessionRead(BaseModel):
 class SessionDetailRead(SessionRead):
     questions: list[QuestionRead] = []
     current_question: QuestionRead | None = None
+    answered_question_ids: list[int] = []
