@@ -80,6 +80,7 @@ export interface Question {
 export interface SessionDetail extends Session {
   questions: Question[]
   current_question: Question | null
+  answered_question_ids: number[]
 }
 
 export interface CreateSessionPayload {
@@ -117,6 +118,12 @@ export interface SubmitAnswerResponse {
   current_question_index: number
 }
 
+export interface AnswerWithFeedback {
+  question_id: number
+  answer_text: string
+  feedback: FeedbackDto
+}
+
 export interface ProfileStats {
   total_sessions: number
   completed_sessions: number
@@ -141,6 +148,10 @@ export function submitAnswer(sessionId: number, data: SubmitAnswerPayload): Prom
 
 export function getMySessions(page: number, limit: number): Promise<Session[]> {
   return request(`/users/me/sessions?page=${page}&limit=${limit}`)
+}
+
+export function getQuestionFeedback(sessionId: number, questionId: number): Promise<AnswerWithFeedback> {
+  return request(`/sessions/${sessionId}/questions/${questionId}/feedback`)
 }
 
 export function getMyStats(): Promise<ProfileStats> {
