@@ -69,6 +69,13 @@ class InterviewEngine:
         if question is None or question.session_id != session_id:
             raise ValueError("Question not found for this session")
 
+        existing = db.query(Answer).filter(
+            Answer.session_id == session_id,
+            Answer.question_id == question_id,
+        ).first()
+        if existing:
+            raise ValueError("Already answered this question")
+
         answer = Answer(
             session_id=session_id,
             question_id=question_id,
@@ -102,8 +109,13 @@ class InterviewEngine:
         db.add(feedback)
         db.flush()
 
-        session_obj.current_question_index += 1
-        if session_obj.current_question_index >= session_obj.total_questions:
+        answered_count = db.query(func.count(Answer.id)).filter(
+            Answer.session_id == session_id
+        ).scalar() or 0
+
+        session_obj.current_question_index = answered_count
+
+        if answered_count >= session_obj.total_questions:
             session_obj.status = "completed"
             session_obj.completed_at = datetime.now(timezone.utc)
 

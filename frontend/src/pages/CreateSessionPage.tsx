@@ -265,11 +265,6 @@ import { Users, ArrowLeft, Loader2, AlertCircle } from 'lucide-react'
                   onChange={(e) => setTotalQuestions(Number(e.target.value))}
                   className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer accent-indigo-500"
                 />
-                <div className="flex justify-between text-xs text-slate-600 mt-2">
-                  <span>1</span>
-                  <span>5</span>
-                  <span>10</span>
-                </div>
               </div>
 
               <button

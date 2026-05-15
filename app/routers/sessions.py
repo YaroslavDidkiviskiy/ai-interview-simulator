@@ -4,9 +4,11 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.auth.dependencies import get_current_user
 from app.auth.models import User
-
 from app.db import get_db
+from app.models.answer import Answer
+from app.models.feedback import Feedback
 from app.models.session import InterviewSession
+from app.schemas.feedback import FeedbackRead
 from app.schemas.session import QuestionRead, SessionCreateSchema, SessionDetailRead, SessionRead
 from app.services.interview_engine import InterviewEngine
 
@@ -49,6 +51,12 @@ def session_detail(
 
     ordered_questions = sorted(session_obj.questions, key=lambda q: q.order_index)
 
+    answered_ids = [
+        row.question_id for row in db.query(Answer.question_id).filter(
+            Answer.session_id == session_id
+        ).all()
+    ]
+
     current_question = None
     if 0 <= session_obj.current_question_index < len(ordered_questions):
         current_question = ordered_questions[session_obj.current_question_index]
@@ -60,4 +68,37 @@ def session_detail(
         **{col.name: getattr(session_obj, col.name) for col in InterviewSession.__table__.columns},
         questions=questions_read,
         current_question=current_q_read,
+        answered_question_ids=answered_ids,
     )
+
+@router.get("/{session_id}/questions/{question_id}/feedback")
+def get_question_feedback(
+    session_id: int,
+    question_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    session_obj = db.get(InterviewSession, session_id)
+    if session_obj is None:
+        raise HTTPException(404, "Session not found")
+    if session_obj.user_id != current_user.id:
+        raise HTTPException(403, "Access denied")
+
+    answer = db.query(Answer).filter(
+        Answer.session_id == session_id,
+        Answer.question_id == question_id,
+    ).first()
+    if not answer:
+        raise HTTPException(404, "Answer not found")
+
+    feedback = db.query(Feedback).filter(
+        Feedback.answer_id == answer.id
+    ).first()
+    if not feedback:
+        raise HTTPException(404, "Feedback not found")
+
+    return {
+        "question_id": question_id,
+        "answer_text": answer.text,
+        "feedback": FeedbackRead.model_validate(feedback, from_attributes=True)
+    }
