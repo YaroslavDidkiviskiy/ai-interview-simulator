@@ -26,7 +26,7 @@ app = FastAPI(
     debug=settings.debug,
     version="0.2.0",
     redirect_slashes=False,
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 app.include_router(sessions_router)
