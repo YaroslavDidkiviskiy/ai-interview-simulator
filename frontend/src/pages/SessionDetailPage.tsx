@@ -75,7 +75,40 @@ function TopicBadge({ topic }: { topic: string }) {
   )
 }
 
-function FeedbackPanel({ fb, answerText }: { fb: FeedbackDto; answerText: string }) {
+// Знаходить перше невідповіджене питання після поточного по order_index.
+// Якщо після поточного немає — бере перше невідповіджене з початку.
+// Якщо всі відповіджені — повертає null.
+function findNextUnanswered(
+  questions: Question[],
+  answeredIds: number[],
+  currentId: number,
+): Question | null {
+  const unanswered = questions.filter(q => !answeredIds.includes(q.id))
+  if (unanswered.length === 0) return null
+
+  const current = questions.find(q => q.id === currentId)
+  if (current) {
+    const after = unanswered
+      .filter(q => q.order_index > current.order_index)
+      .sort((a, b) => a.order_index - b.order_index)
+    if (after.length > 0) return after[0]
+  }
+
+  // fallback: перше невідповіджене по order_index (wrap around)
+  return [...unanswered].sort((a, b) => a.order_index - b.order_index)[0]
+}
+
+function FeedbackPanel({
+  fb,
+  answerText,
+  nextQuestion,
+  onNextQuestion,
+}: {
+  fb: FeedbackDto
+  answerText: string
+  nextQuestion: Question | null
+  onNextQuestion: (q: Question) => void
+}) {
   return (
     <div style={{
       marginTop: 16,
@@ -84,21 +117,34 @@ function FeedbackPanel({ fb, answerText }: { fb: FeedbackDto; answerText: string
       padding: '28px 28px 24px',
       animation: 'slideUp 0.4s cubic-bezier(.4,0,.2,1)',
     }}>
-      <div style={{ marginBottom: 20, padding: '12px 16px', background: '#0f172a', border: '1px solid #1e293b', borderRadius: 12, fontSize: 14, color: '#64748b', lineHeight: 1.6 }}>
+      {/* Answer recap */}
+      <div style={{
+        marginBottom: 20, padding: '12px 16px',
+        background: '#0f172a', border: '1px solid #1e293b',
+        borderRadius: 12, fontSize: 14, color: '#64748b', lineHeight: 1.6,
+      }}>
         {answerText}
       </div>
+
+      {/* Score rings */}
       <div style={{ display: 'flex', gap: 20, justifyContent: 'center', marginBottom: 24 }}>
         <ScoreRing value={fb.score} label="Overall" />
         <ScoreRing value={fb.correctness_score} label="Correct" />
         <ScoreRing value={fb.clarity_score} label="Clarity" />
         <ScoreRing value={fb.confidence_score} label="Confidence" />
       </div>
+
+      {/* Feedback text */}
       <p style={{ color: '#cbd5e1', lineHeight: 1.7, marginBottom: 20, fontSize: 14 }}>
         {fb.feedback_text}
       </p>
+
+      {/* Missing points */}
       {fb.missing_points.length > 0 && (
         <div style={{ marginBottom: 16 }}>
-          <p style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Missing points</p>
+          <p style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>
+            Missing points
+          </p>
           <ul style={{ paddingLeft: 18, margin: 0 }}>
             {fb.missing_points.map((p, i) => (
               <li key={i} style={{ color: '#f87171', fontSize: 13, marginBottom: 4 }}>{p}</li>
@@ -106,14 +152,51 @@ function FeedbackPanel({ fb, answerText }: { fb: FeedbackDto; answerText: string
           </ul>
         </div>
       )}
+
+      {/* Better answer */}
       {fb.better_answer.length > 0 && (
-        <div>
-          <p style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>Stronger answer ideas</p>
+        <div style={{ marginBottom: nextQuestion ? 24 : 0 }}>
+          <p style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>
+            Stronger answer ideas
+          </p>
           <ul style={{ paddingLeft: 18, margin: 0 }}>
             {fb.better_answer.map((p, i) => (
               <li key={i} style={{ color: '#86efac', fontSize: 13, marginBottom: 4 }}>{p}</li>
             ))}
           </ul>
+        </div>
+      )}
+
+      {/* Next Question button — показується тільки якщо є невідповіджене питання */}
+      {nextQuestion && (
+        <div style={{
+          marginTop: 24,
+          paddingTop: 20,
+          borderTop: '1px solid #1e293b',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 12,
+          flexWrap: 'wrap',
+        }}>
+          <div style={{ minWidth: 0 }}>
+            <p style={{ margin: 0, fontSize: 11, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
+              Next up
+            </p>
+            <p style={{
+              margin: 0, fontSize: 13, color: '#94a3b8',
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+              maxWidth: 300,
+            }}>
+              {nextQuestion.text}
+            </p>
+          </div>
+          <button
+            onClick={() => onNextQuestion(nextQuestion)}
+            className="next-question-btn"
+          >
+            Next Question <ChevronRight style={{ width: 16, height: 16 }} />
+          </button>
         </div>
       )}
     </div>
@@ -142,16 +225,14 @@ function QuestionListItem({
       onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = isActive ? '#6366f170' : '#4f46e540' }}
       onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = isActive ? '#6366f150' : isAnswered ? '#4ade8020' : '#1e293b' }}
     >
-      {/* number / checkmark */}
       {isAnswered ? (
-       <div style={{
-        width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-        background: '#052e16',
-        border: '1px solid #4ade8040',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}>
-        <CheckCircle2 size={16} strokeWidth={2} color='#4ade80' />
-      </div>
+        <div style={{
+          width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
+          background: '#052e16', border: '1px solid #4ade8040',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <CheckCircle2 size={16} strokeWidth={2} color='#4ade80' />
+        </div>
       ) : (
         <div style={{
           width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
@@ -166,7 +247,7 @@ function QuestionListItem({
           }}>{index + 1}</span>
         </div>
       )}
-      {/* text content */}
+
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', gap: 6, marginBottom: 5, flexWrap: 'wrap' }}>
           <TopicBadge topic={question.topic} />
@@ -181,7 +262,6 @@ function QuestionListItem({
         </p>
       </div>
 
-      {/* done badge */}
       {isAnswered && (
         <span style={{
           fontSize: 10, color: '#4ade80', fontWeight: 700,
@@ -295,6 +375,13 @@ export default function SessionDetailPage() {
   const progress = Math.round((shownIndex / session.total_questions) * 100)
   const level = formatLevelLabel(session.level)
 
+  // Рахуємо nextQuestion для поточного активного питання.
+  // answered_question_ids вже включає activeQuestion якщо щойно відповіли
+  // (бо handleSubmit оновлює session state перед setPhase('feedback')).
+  const nextQuestion = activeQuestion
+    ? findNextUnanswered(session.questions, session.answered_question_ids, activeQuestion.id)
+    : null
+
   return (
     <Layout>
       <style>{`
@@ -322,8 +409,19 @@ export default function SessionDetailPage() {
         }
         .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
         .submit-btn:not(:disabled):hover { transform: translateY(-1px); box-shadow: 0 8px 28px #4f46e550; }
+        .next-question-btn {
+          display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+          background: linear-gradient(135deg,#4f46e5,#7c3aed);
+          color: #fff; border: none; border-radius: 12px;
+          padding: 11px 22px; font-weight: 700; font-size: 14px;
+          cursor: pointer; letter-spacing: 0.02em;
+          box-shadow: 0 4px 20px #4f46e530;
+          transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .next-question-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 28px #4f46e550; }
       `}</style>
 
+      {/* Header */}
       <div style={{ marginBottom: 32 }}>
         <div style={{ fontSize: 12, color: '#475569', marginBottom: 6, display: 'flex', gap: 6, alignItems: 'center' }}>
           <Link to="/" style={{ color: '#64748b', textDecoration: 'none' }}>Home</Link>
@@ -351,6 +449,7 @@ export default function SessionDetailPage() {
         </div>
       </div>
 
+      {/* Progress */}
       <div style={{ marginBottom: 32 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#64748b', marginBottom: 8 }}>
           <span>Progress</span>
@@ -380,6 +479,7 @@ export default function SessionDetailPage() {
         </div>
       </div>
 
+      {/* Main content */}
       {isCompleted ? (
         <div style={{
           padding: '48px 32px', borderRadius: 24, textAlign: 'center',
@@ -407,6 +507,7 @@ export default function SessionDetailPage() {
         </div>
       ) : (
         <>
+          {/* Active question card */}
           {activeQuestion && (
             <div style={{
               padding: '24px 28px', borderRadius: 20, marginBottom: 20,
@@ -428,12 +529,14 @@ export default function SessionDetailPage() {
             </div>
           )}
 
+          {/* Loading feedback spinner */}
           {phase === 'loading_feedback' && (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 0', color: '#475569', gap: 10 }}>
               <Loader2 className="w-5 h-5 animate-spin" /> Loading feedback…
             </div>
           )}
 
+          {/* Answer form — тільки для невідповіджених питань */}
           {(phase === 'answering' || phase === 'submitting') && activeQuestion && !session.answered_question_ids.includes(activeQuestion.id) && (
             <form onSubmit={handleSubmit} style={{ marginBottom: 8, animation: 'fadeIn 0.3s' }}>
               <textarea
@@ -472,12 +575,19 @@ export default function SessionDetailPage() {
             </form>
           )}
 
+          {/* Feedback panel з Next Question кнопкою всередині */}
           {phase === 'feedback' && lastFeedback && (
-            <FeedbackPanel fb={lastFeedback} answerText={lastAnswerText} />
+            <FeedbackPanel
+              fb={lastFeedback}
+              answerText={lastAnswerText}
+              nextQuestion={nextQuestion}
+              onNextQuestion={handleQuestionClick}
+            />
           )}
         </>
       )}
 
+      {/* Questions list */}
       {session.questions.length > 0 && (
         <div style={{ marginTop: 40 }}>
           <p style={{ fontSize: 11, fontWeight: 700, color: '#334155', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 12 }}>
