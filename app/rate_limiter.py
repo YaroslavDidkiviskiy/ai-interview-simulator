@@ -64,4 +64,4 @@ def rate_limiter_factory(endpoint: str, max_requests: int, window_seconds: int):
 # ── pre-configured limits ─────────────────────────────────────────────────────
 rate_limit_login = rate_limiter_factory("login",    3, 60)   # 3 req/m
 rate_limit_register = rate_limiter_factory("register", 3,  60)   # 3 req/m
-rate_limit_answers  = rate_limiter_factory("answers",  10, 60)   # 30 req/m
+rate_limit_answers  = rate_limiter_factory("answers",  4, 60)   # 4 req/m
