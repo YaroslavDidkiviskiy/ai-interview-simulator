@@ -70,6 +70,7 @@ class OllamaEvaluator(BaseEvaluator):
             "correctness_score": 0,
             "confidence_score": 0,
             "feedback_text": "",
+            "feedback_text": "",
             "missing_points": [],
             "better_answer": []
             }}
@@ -83,7 +84,7 @@ class OllamaEvaluator(BaseEvaluator):
             - do not return explanations outside JSON
             """.strip()
 
-    def evaluate(
+    async def evaluate(
         self,
         question_text: str,
         answer_text: str,
@@ -101,5 +102,5 @@ class OllamaEvaluator(BaseEvaluator):
             interview_type=interview_type,
         )
 
-        raw_response = self.client.generate(prompt)
+        raw_response = await self.client.generate(prompt)
         return _parse_evaluator_json(raw_response)

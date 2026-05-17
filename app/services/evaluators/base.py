@@ -1,3 +1,4 @@
+import asyncio
 from abc import ABC, abstractmethod
 
 
@@ -15,7 +16,7 @@ class BaseEvaluator(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def evaluate(
+    async def evaluate(
         self,
         question_text: str,
         answer_text: str,
