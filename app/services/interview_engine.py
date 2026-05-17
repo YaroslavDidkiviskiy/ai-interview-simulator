@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from sqlalchemy import func, cast, Float, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.logging import get_logger
 from app.models.question import Question
 from app.models.session import InterviewSession
 from app.models.answer import Answer
@@ -10,6 +11,8 @@ from app.models.feedback import Feedback
 from app.schemas.session import SessionCreateSchema
 from app.services.question_selector import QuestionSelector
 from app.services.evaluators.factory import get_evaluator
+
+logger = get_logger(__name__)
 
 
 class InterviewEngine:
@@ -22,13 +25,24 @@ class InterviewEngine:
         session_data: SessionCreateSchema,
         user_id: str,
     ) -> InterviewSession:
-        selected_questions = await self.question_selector.select_questions(
-            db=db,
-            role=session_data.role,
-            level=session_data.level,
-            interview_type=session_data.interview_type,
-            total_questions=session_data.total_questions,
-        )
+        try:
+            selected_questions = await self.question_selector.select_questions(
+                db=db,
+                role=session_data.role,
+                level=session_data.level,
+                interview_type=session_data.interview_type,
+                total_questions=session_data.total_questions,
+            )
+        except ValueError as exc:
+            logger.warning(
+                "question_selection_failed",
+                user_id=user_id,
+                role=session_data.role,
+                level=session_data.level,
+                interview_type=session_data.interview_type,
+                error=str(exc),
+            )
+            raise
 
         interview_session = InterviewSession(
             user_id=user_id,
@@ -58,6 +72,17 @@ class InterviewEngine:
         db.add_all(question_rows)
         await db.commit()
         await db.refresh(interview_session)
+
+        logger.info(
+            "session_created",
+            session_id=interview_session.id,
+            user_id=user_id,
+            role=session_data.role,
+            level=session_data.level,
+            interview_type=session_data.interview_type,
+            total_questions=session_data.total_questions,
+        )
+
         return interview_session
 
     async def submit_answer(
@@ -93,13 +118,44 @@ class InterviewEngine:
         await db.flush()
 
         evaluator = get_evaluator()
-        evaluation = await evaluator.evaluate(
-            question_text=question.text,
-            answer_text=answer_text,
+
+        logger.info(
+            "evaluation_started",
+            session_id=session_id,
+            question_id=question_id,
             topic=question.topic,
             difficulty=question.difficulty,
-            level=session_obj.level,
-            interview_type=session_obj.interview_type,
+            provider=type(evaluator).__name__,
+        )
+
+        try:
+            evaluation = await evaluator.evaluate(
+                question_text=question.text,
+                answer_text=answer_text,
+                topic=question.topic,
+                difficulty=question.difficulty,
+                level=session_obj.level,
+                interview_type=session_obj.interview_type,
+            )
+        except Exception as exc:
+            logger.error(
+                "evaluation_failed",
+                session_id=session_id,
+                question_id=question_id,
+                provider=type(evaluator).__name__,
+                error=str(exc),
+                exc_info=True,
+            )
+            raise
+
+        logger.info(
+            "evaluation_completed",
+            session_id=session_id,
+            question_id=question_id,
+            score=evaluation["score"],
+            clarity_score=evaluation["clarity_score"],
+            correctness_score=evaluation["correctness_score"],
+            confidence_score=evaluation["confidence_score"],
         )
 
         feedback = Feedback(
@@ -121,7 +177,6 @@ class InterviewEngine:
             select(func.count(Answer.id)).where(Answer.session_id == session_id)
         )
         answered_count = answered_count_result.scalar() or 0
-
         session_obj.current_question_index = answered_count
 
         if answered_count >= session_obj.total_questions:
@@ -135,6 +190,14 @@ class InterviewEngine:
             )
             avg = avg_result.scalar()
             session_obj.final_score = round(avg) if avg is not None else 0
+
+            logger.info(
+                "session_completed",
+                session_id=session_id,
+                user_id=session_obj.user_id,
+                final_score=session_obj.final_score,
+                total_questions=session_obj.total_questions,
+            )
 
         await db.commit()
         await db.refresh(answer)
