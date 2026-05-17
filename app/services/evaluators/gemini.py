@@ -2,7 +2,7 @@ import json
 
 from app.services.evaluators.base import BaseEvaluator
 from app.services.evaluators.prompts import get_interview_type_guidance, get_level_guidance
-from app.services.llm.gemini_client import GeminiClient
+from app.clients.llm.gemini_client import GeminiClient
 
 
 class GeminiEvaluator(BaseEvaluator):

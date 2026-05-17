@@ -3,7 +3,7 @@ import re
 
 from app.services.evaluators.base import BaseEvaluator
 from app.services.evaluators.prompts import get_interview_type_guidance, get_level_guidance
-from app.services.llm.ollama_client import OllamaClient
+from app.clients.llm.ollama_client import OllamaClient
 
 
 def _parse_evaluator_json(raw: str) -> dict:
