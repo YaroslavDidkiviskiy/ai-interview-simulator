@@ -164,3 +164,22 @@ export function changePassword(current_password: string, new_password: string): 
     body: JSON.stringify({ current_password, new_password }),
   })
 }
+
+export interface Me {
+  id: string
+  email: string
+  role: string
+  auth_provider: 'local' | 'google' | 'github'
+  has_password: boolean
+}
+
+export function getMe(): Promise<Me> {
+  return request('/users/me')
+}
+
+export function setPassword(password: string): Promise<{ ok: boolean }> {
+  return request('/users/me/set-password', {
+    method: 'POST',
+    body: JSON.stringify({ password }),
+  })
+}

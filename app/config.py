@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     debug: bool = Field(default=True, alias="DEBUG")
 
     database_url: str = Field(
-        default="postgresql+psycopg://postgres:postgres@localhost:5432/ai_interview_simulator",
+        default="",
         alias="DATABASE_URL"
     )
 

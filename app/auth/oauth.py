@@ -4,11 +4,12 @@ from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
 from app.db import get_db
-from app.auth.models import User, RefreshToken
+from app.auth.models import AuthProvider, User, RefreshToken, AuthProvider
 from app.auth.security import create_access_token, create_refresh_token, hash_password
 
 settings = get_settings()
@@ -25,8 +26,8 @@ GOOGLE_USER_URL   = "https://www.googleapis.com/oauth2/v2/userinfo"
 FRONTEND_URL = settings.frontend_url
 
 
-def _redirect_with_tokens(user: User, db: Session) -> RedirectResponse:
-    access_token  = create_access_token({"sub": user.id, "role": user.role.value})
+async def _redirect_with_tokens(user: User, db: AsyncSession) -> RedirectResponse:
+    access_token = create_access_token({"sub": user.id, "role": user.role.value})
     refresh_token = create_refresh_token()
 
     db.add(RefreshToken(
@@ -34,11 +35,9 @@ def _redirect_with_tokens(user: User, db: Session) -> RedirectResponse:
         user_id=user.id,
         expires_at=datetime.now(timezone.utc) + timedelta(days=settings.refresh_expire_days),
     ))
-    db.commit()
+    await db.commit()
 
     response = RedirectResponse(url=FRONTEND_URL, status_code=302)
-
-    # access token
     response.set_cookie(
         key="oauth_access_token",
         value=access_token,
@@ -48,7 +47,6 @@ def _redirect_with_tokens(user: User, db: Session) -> RedirectResponse:
         max_age=60 * 30,
         path="/",
     )
-    # refresh token — httpOnly
     response.set_cookie(
         key="refresh_token",
         value=refresh_token,
@@ -61,16 +59,18 @@ def _redirect_with_tokens(user: User, db: Session) -> RedirectResponse:
     return response
 
 
-def _get_or_create_user(db: Session, email: str) -> User:
-    user = db.query(User).filter(User.email == email).first()
+async def _get_or_create_user(db: AsyncSession, email: str, provider: str) -> User:
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
     if not user:
         user = User(
             email=email,
-            password=hash_password(secrets.token_urlsafe(32)),
+            password=None,
+            auth_provider=provider,
         )
         db.add(user)
-        db.commit()
-        db.refresh(user)
+        await db.commit()
+        await db.refresh(user)
     return user
 
 
@@ -87,9 +87,9 @@ def github_login():
 
 
 @router.get("/github/callback")
-def github_callback(code: str, db: Session = Depends(get_db)):
-    with httpx.Client() as client:
-        token_res = client.post(
+async def github_callback(code: str, db: AsyncSession = Depends(get_db)):
+    async with httpx.AsyncClient() as client:
+        token_res = await client.post(
             GITHUB_TOKEN_URL,
             data={
                 "client_id":     settings.github_client_id,
@@ -103,8 +103,8 @@ def github_callback(code: str, db: Session = Depends(get_db)):
     if not gh_token:
         raise HTTPException(400, "GitHub OAuth failed")
 
-    with httpx.Client() as client:
-        emails_res = client.get(
+    async with httpx.AsyncClient() as client:
+        emails_res = await client.get(
             GITHUB_EMAILS_URL,
             headers={"Authorization": f"Bearer {gh_token}"},
         )
@@ -117,8 +117,8 @@ def github_callback(code: str, db: Session = Depends(get_db)):
     if not primary:
         raise HTTPException(400, "No verified email on GitHub account")
 
-    user = _get_or_create_user(db, primary)
-    return _redirect_with_tokens(user, db)
+    user = await _get_or_create_user(db, primary, AuthProvider.github)
+    return await _redirect_with_tokens(user, db)
 
 
 # ── Google ────────────────────────────────────────────────────────────────────
@@ -136,9 +136,9 @@ def google_login():
 
 
 @router.get("/google/callback")
-def google_callback(code: str, db: Session = Depends(get_db)):
-    with httpx.Client() as client:
-        token_res = client.post(
+async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
+    async with httpx.AsyncClient() as client:
+        token_res = await client.post(
             GOOGLE_TOKEN_URL,
             data={
                 "client_id":     settings.google_client_id,
@@ -153,8 +153,8 @@ def google_callback(code: str, db: Session = Depends(get_db)):
     if not google_token:
         raise HTTPException(400, "Google OAuth failed")
 
-    with httpx.Client() as client:
-        user_res = client.get(
+    async with httpx.AsyncClient() as client:
+        user_res = await client.get(
             GOOGLE_USER_URL,
             headers={"Authorization": f"Bearer {google_token}"},
         )
@@ -163,5 +163,5 @@ def google_callback(code: str, db: Session = Depends(get_db)):
     if not email:
         raise HTTPException(400, "No email from Google account")
 
-    user = _get_or_create_user(db, email)
-    return _redirect_with_tokens(user, db)
+    user = await _get_or_create_user(db, email, AuthProvider.google)
+    return await _redirect_with_tokens(user, db)

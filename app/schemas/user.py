@@ -10,17 +10,29 @@ def validate_password_complexity(v: str) -> str:
         raise ValueError("Password must contain at least one punctuation symbol")
     return v
 
+
 class MeResponse(BaseModel):
     id: str
     email: str
     role: str
+    auth_provider: str
+    has_password: bool
 
 
 class ChangePasswordRequest(BaseModel):
     current_password: str
-    new_password: str = Field(min_length=8, max_length=20)
+    new_password: str = Field(min_length=8, max_length=128)
 
     @field_validator("new_password")
     @classmethod
     def validate_new_password(cls, v: str) -> str:
+        return validate_password_complexity(v)
+
+
+class SetPasswordRequest(BaseModel):
+    password: str = Field(min_length=8, max_length=128)
+
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, v: str) -> str:
         return validate_password_complexity(v)

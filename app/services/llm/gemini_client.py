@@ -1,9 +1,9 @@
-import time
+import asyncio
 import json
 
 from google import genai
 from google.genai import types
-from google.api_core.exceptions import ResourceExhausted
+from google.genai.errors import APIError
 
 from app.config import get_settings
 
@@ -28,13 +28,13 @@ EVALUATION_SCHEMA = types.Schema(
 class GeminiClient:
     def __init__(self) -> None:
         settings = get_settings()
-        self.client = genai.Client(api_key=settings.gemini_api_key)
+        self._client = genai.Client(api_key=settings.gemini_api_key)
         self.model = "gemini-2.5-flash"
 
-    def generate(self, prompt: str, retries: int = 3) -> str:
+    async def generate(self, prompt: str, retries: int = 3) -> str:
         for attempt in range(retries):
             try:
-                response = self.client.models.generate_content(
+                response = await self._client.aio.models.generate_content(
                     model=self.model,
                     contents=prompt,
                     config=types.GenerateContentConfig(
@@ -46,10 +46,9 @@ class GeminiClient:
                 )
                 return response.text or "{}"
 
-            except ResourceExhausted:
-                if attempt < retries - 1:
-                    wait = 10 * (attempt + 1)
-                    time.sleep(wait)
+            except APIError as e:
+                if e.code == 429 and attempt < retries - 1:
+                    await asyncio.sleep(10 * (attempt + 1))
                 else:
                     raise
 

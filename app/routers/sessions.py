@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import selectinload
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.dependencies import get_current_user
 from app.auth.models import User
@@ -16,32 +17,31 @@ router = APIRouter(prefix="/api/sessions", tags=["sessions"])
 
 
 @router.post("/", response_model=SessionRead, status_code=201)
-def create_session(
+async def create_session(
     session_data: SessionCreateSchema,
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     engine = InterviewEngine()
     try:
-        created = engine.create_session(db=db, session_data=session_data, user_id=current_user.id)
-        db.commit()
+        created = await engine.create_session(db=db, session_data=session_data, user_id=current_user.id)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
     return created
 
 
 @router.get("/{session_id}", response_model=SessionDetailRead)
-def session_detail(
+async def session_detail(
     session_id: int,
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    stmt = (
+    result = await db.execute(
         select(InterviewSession)
         .options(selectinload(InterviewSession.questions))
         .where(InterviewSession.id == session_id)
     )
-    session_obj = db.execute(stmt).scalar_one_or_none()
+    session_obj = result.scalar_one_or_none()
 
     if session_obj is None:
         raise HTTPException(status_code=404, detail="Session not found")
@@ -51,11 +51,10 @@ def session_detail(
 
     ordered_questions = sorted(session_obj.questions, key=lambda q: q.order_index)
 
-    answered_ids = [
-        row.question_id for row in db.query(Answer.question_id).filter(
-            Answer.session_id == session_id
-        ).all()
-    ]
+    answered_result = await db.execute(
+        select(Answer.question_id).where(Answer.session_id == session_id)
+    )
+    answered_ids = list(answered_result.scalars().all())
 
     current_question = None
     if 0 <= session_obj.current_question_index < len(ordered_questions):
@@ -71,34 +70,39 @@ def session_detail(
         answered_question_ids=answered_ids,
     )
 
+
 @router.get("/{session_id}/questions/{question_id}/feedback")
-def get_question_feedback(
+async def get_question_feedback(
     session_id: int,
     question_id: int,
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    session_obj = db.get(InterviewSession, session_id)
+    session_obj = await db.get(InterviewSession, session_id)
     if session_obj is None:
         raise HTTPException(404, "Session not found")
     if session_obj.user_id != current_user.id:
         raise HTTPException(403, "Access denied")
 
-    answer = db.query(Answer).filter(
-        Answer.session_id == session_id,
-        Answer.question_id == question_id,
-    ).first()
+    answer_result = await db.execute(
+        select(Answer).where(
+            Answer.session_id == session_id,
+            Answer.question_id == question_id,
+        )
+    )
+    answer = answer_result.scalar_one_or_none()
     if not answer:
         raise HTTPException(404, "Answer not found")
 
-    feedback = db.query(Feedback).filter(
-        Feedback.answer_id == answer.id
-    ).first()
+    feedback_result = await db.execute(
+        select(Feedback).where(Feedback.answer_id == answer.id)
+    )
+    feedback = feedback_result.scalar_one_or_none()
     if not feedback:
         raise HTTPException(404, "Feedback not found")
 
     return {
         "question_id": question_id,
         "answer_text": answer.text,
-        "feedback": FeedbackRead.model_validate(feedback, from_attributes=True)
+        "feedback": FeedbackRead.model_validate(feedback, from_attributes=True),
     }

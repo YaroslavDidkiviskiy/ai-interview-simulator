@@ -54,7 +54,7 @@ class GeminiEvaluator(BaseEvaluator):
             - Keep feedback natural and conversational
             """.strip()
 
-    def evaluate(
+    async def evaluate(
         self,
         question_text: str,
         answer_text: str,
@@ -72,8 +72,7 @@ class GeminiEvaluator(BaseEvaluator):
             interview_type=interview_type,
         )
 
-        raw = self.client.generate(prompt)
-
+        raw = await self.client.generate(prompt)
         result = json.loads(raw)
 
         required = ["score", "clarity_score", "correctness_score", "confidence_score",

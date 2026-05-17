@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
-from sqlalchemy import func, cast, Float
-from sqlalchemy.orm import Session
+
+from sqlalchemy import func, cast, Float, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.question import Question
 from app.models.session import InterviewSession
@@ -15,8 +16,13 @@ class InterviewEngine:
     def __init__(self, question_selector: QuestionSelector | None = None) -> None:
         self.question_selector = question_selector or QuestionSelector()
 
-    def create_session(self, db: Session, session_data: SessionCreateSchema, user_id: str) -> InterviewSession:
-        selected_questions = self.question_selector.select_questions(
+    async def create_session(
+        self,
+        db: AsyncSession,
+        session_data: SessionCreateSchema,
+        user_id: str,
+    ) -> InterviewSession:
+        selected_questions = await self.question_selector.select_questions(
             db=db,
             role=session_data.role,
             level=session_data.level,
@@ -35,7 +41,7 @@ class InterviewEngine:
         )
 
         db.add(interview_session)
-        db.flush()
+        await db.flush()
 
         question_rows = [
             Question(
@@ -50,30 +56,32 @@ class InterviewEngine:
         ]
 
         db.add_all(question_rows)
-        db.commit()
-        db.refresh(interview_session)
+        await db.commit()
+        await db.refresh(interview_session)
         return interview_session
 
-    def submit_answer(
+    async def submit_answer(
         self,
-        db: Session,
+        db: AsyncSession,
         session_id: int,
         question_id: int,
         answer_text: str,
     ) -> tuple[Answer, Feedback, InterviewSession]:
-        session_obj = db.get(InterviewSession, session_id)
+        session_obj = await db.get(InterviewSession, session_id)
         if session_obj is None:
             raise ValueError("Session not found")
 
-        question = db.get(Question, question_id)
+        question = await db.get(Question, question_id)
         if question is None or question.session_id != session_id:
             raise ValueError("Question not found for this session")
 
-        existing = db.query(Answer).filter(
-            Answer.session_id == session_id,
-            Answer.question_id == question_id,
-        ).first()
-        if existing:
+        existing = await db.execute(
+            select(Answer).where(
+                Answer.session_id == session_id,
+                Answer.question_id == question_id,
+            )
+        )
+        if existing.scalar_one_or_none():
             raise ValueError("Already answered this question")
 
         answer = Answer(
@@ -82,10 +90,10 @@ class InterviewEngine:
             text=answer_text,
         )
         db.add(answer)
-        db.flush()
+        await db.flush()
 
         evaluator = get_evaluator()
-        evaluation = evaluator.evaluate(
+        evaluation = await evaluator.evaluate(
             question_text=question.text,
             answer_text=answer_text,
             topic=question.topic,
@@ -107,11 +115,12 @@ class InterviewEngine:
             better_answer=evaluation["better_answer"],
         )
         db.add(feedback)
-        db.flush()
+        await db.flush()
 
-        answered_count = db.query(func.count(Answer.id)).filter(
-            Answer.session_id == session_id
-        ).scalar() or 0
+        answered_count_result = await db.execute(
+            select(func.count(Answer.id)).where(Answer.session_id == session_id)
+        )
+        answered_count = answered_count_result.scalar() or 0
 
         session_obj.current_question_index = answered_count
 
@@ -119,14 +128,17 @@ class InterviewEngine:
             session_obj.status = "completed"
             session_obj.completed_at = datetime.now(timezone.utc)
 
-            avg = db.query(cast(func.avg(Feedback.score), Float)).filter(
-                Feedback.session_id == session_id
-            ).scalar()
+            avg_result = await db.execute(
+                select(cast(func.avg(Feedback.score), Float)).where(
+                    Feedback.session_id == session_id
+                )
+            )
+            avg = avg_result.scalar()
             session_obj.final_score = round(avg) if avg is not None else 0
 
-        db.commit()
-        db.refresh(answer)
-        db.refresh(feedback)
-        db.refresh(session_obj)
+        await db.commit()
+        await db.refresh(answer)
+        await db.refresh(feedback)
+        await db.refresh(session_obj)
 
         return answer, feedback, session_obj
