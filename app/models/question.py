@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
@@ -28,7 +28,8 @@ class Question(Base):
     order_index: Mapped[int] = mapped_column(Integer, nullable=False)
     generated_by_ai: Mapped[bool] = mapped_column(default=False, nullable=False)
 
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+
 
     session: Mapped["InterviewSession"] = relationship(back_populates="questions")
     answers: Mapped[list["Answer"]] = relationship(
