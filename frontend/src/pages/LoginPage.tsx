@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import Layout from '../components/Layout'
 import { redirectAfterAuth } from '../utils/redirectAfterAuth'
@@ -30,6 +30,7 @@ export default function LoginPage() {
   const location = useLocation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -106,12 +107,18 @@ export default function LoginPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2">Password</label>
-              <input
-                type="password" value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input-base w-full" placeholder="••••••••"
-                required autoComplete="current-password"
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'} value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input-base w-full" placeholder="••••••••"
+                  required autoComplete="current-password"
+                  style={{ paddingRight: 40 }}
+                />
+                <button type="button" tabIndex={-1} onClick={() => setShowPassword(s => !s)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#475569', padding: 0, display: 'flex', alignItems: 'center' }}>
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
+              </div>
             </div>
             <button type="submit" disabled={loading} className="btn-primary w-full py-4">
               {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Signing in…</> : 'Sign in'}
