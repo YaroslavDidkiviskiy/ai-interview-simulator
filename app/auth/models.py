@@ -15,16 +15,27 @@ class Role(str, enum.Enum):
     admin = "admin"
 
 
+class AuthProvider(str, enum.Enum):
+    local = "local"
+    google = "google"
+    github = "github"
+
+
 class User(Base):
     __tablename__ = "users"
 
     id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     email: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
-    password: Mapped[str] = mapped_column(String, nullable=False)
+    password: Mapped[str] = mapped_column(String, nullable=True)
     role: Mapped[Role] = mapped_column(Enum(Role), default=Role.user, nullable=False)
+    auth_provider: Mapped[AuthProvider] = mapped_column(
+        Enum(AuthProvider), default=AuthProvider.local, nullable=False
+    )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
 
-    tokens: Mapped[list["RefreshToken"]] = relationship(back_populates="user", cascade="all, delete")
+    tokens: Mapped[list["RefreshToken"]] = relationship(
+        back_populates="user", cascade="all, delete"
+    )
 
 
 class RefreshToken(Base):
