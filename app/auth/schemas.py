@@ -1,13 +1,11 @@
 import string
-
-from pydantic import Field, BaseModel, EmailStr, field_validator
-
+from pydantic import BaseModel, EmailStr, Field, field_validator
 from app.schemas.user import validate_password_complexity
 
 
 class RegisterRequest(BaseModel):
     email: EmailStr
-    password: str = Field(min_length=8, max_length=20)
+    password: str = Field(min_length=8, max_length=128)
 
     @field_validator("password")
     @classmethod

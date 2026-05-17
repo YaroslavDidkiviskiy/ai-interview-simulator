@@ -1,25 +1,33 @@
 import secrets
-import hashlib
 from datetime import datetime, timedelta, timezone
 
+from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError, VerificationError, InvalidHashError
 from jose import jwt, JWTError
-from passlib.context import CryptContext
 
 from app.config import get_settings
 
 settings = get_settings()
-pwd_ctx = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+_ph = PasswordHasher(
+    time_cost=2,
+    memory_cost=65536, # 64MB
+    parallelism=2,
+)
+
 ALGORITHM = "HS256"
 
 
 def hash_password(password: str) -> str:
-    prehashed = hashlib.sha256(password.encode()).hexdigest()
-    return pwd_ctx.hash(prehashed)
+    return _ph.hash(password)
 
 
-def verify_password(password: str, hashed_password: str) -> bool:
-    prehashed = hashlib.sha256(password.encode()).hexdigest()
-    return pwd_ctx.verify(prehashed, hashed_password)
+def verify_password(password: str, hashed: str) -> bool:
+    try:
+        return _ph.verify(hashed, password)
+    except (VerifyMismatchError, VerificationError, InvalidHashError):
+        return False
 
 
 def create_access_token(data: dict) -> str:
