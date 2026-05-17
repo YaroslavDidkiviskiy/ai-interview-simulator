@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.dependencies import get_current_user
 from app.db import get_db
@@ -11,24 +11,25 @@ from app.rate_limiter import rate_limit_answers
 
 router = APIRouter(prefix="/api/sessions/{session_id}/answers", tags=["answers"])
 
-@router.post("/", status_code=201)
-def submit_answer(
+
+@router.post("/", status_code=201, dependencies=[Depends(rate_limit_answers)])
+async def submit_answer(
     session_id: int,
     payload: AnswerCreateSchema,
-    db: Session = Depends(get_db),
-    current_user = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
-    session_obj = db.get(InterviewSession, session_id)
+    session_obj = await db.get(InterviewSession, session_id)
 
     if session_obj is None:
         raise HTTPException(status_code=404, detail="Session not found")
-    
+
     if session_obj.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Access denied")
 
     engine = InterviewEngine()
     try:
-        answer, feedback, session_obj = engine.submit_answer(
+        answer, feedback, session_obj = await engine.submit_answer(
             db=db,
             session_id=session_id,
             question_id=payload.question_id,
