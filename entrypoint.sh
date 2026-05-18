@@ -1,11 +1,6 @@
 #!/bin/sh
 set -e
 
-if [ -z "$(ls alembic/versions/*.py 2>/dev/null)" ]; then
-    echo "No migrations found, generating..."
-    alembic revision --autogenerate -m "initial"
-fi
-
 echo "Running migrations..."
 alembic upgrade head
 
