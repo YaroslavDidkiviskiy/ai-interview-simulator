@@ -64,22 +64,21 @@ def do_run_migrations(connection: Connection) -> None:
 
 
 async def run_async_migrations() -> None:
-    """In this scenario we need to create an Engine
-    and associate a connection with the context.
-
-    """
+    from app.config import get_settings
+    settings = get_settings()
 
     connectable = async_engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
+        connect_args={"ssl": False},
+        url=settings.database_url,
     )
 
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)
 
     await connectable.dispose()
-
 
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode."""
