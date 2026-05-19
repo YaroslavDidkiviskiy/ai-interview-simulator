@@ -17,6 +17,8 @@ import {
   CsharpOriginal,
 } from 'devicons-react'
 
+const API_BASE = import.meta.env.VITE_API_URL || ''
+
 interface Stats {
   total_questions: number
   total_sessions: number
@@ -108,7 +110,7 @@ export default function HomePage() {
   const [stats, setStats] = useState<Stats | null>(null)
 
   useEffect(() => {
-    fetch('/api/stats')
+    fetch(`${API_BASE}/api/stats`)
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data) setStats(data) })
       .catch(() => {})

@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 
+const API_BASE = import.meta.env.VITE_API_URL || ''
+
 export interface User {
   id: string
   email: string
@@ -53,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return
     }
     let cancelled = false
-    fetch('/api/users/me', {
+    fetch(`${API_BASE}/api/users/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => (r.ok ? r.json() : null))
@@ -76,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     form.append('username', email)
     form.append('password', password)
 
-    const res = await fetch('/auth/login', {
+    const res = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: form,
@@ -88,7 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('access_token', data.access_token)
     setToken(data.access_token)
 
-    const me = await fetch('/api/users/me', {
+    const me = await fetch(`${API_BASE}/api/users/me`, {
       headers: { Authorization: `Bearer ${data.access_token}` },
     })
     if (!me.ok) {
@@ -100,7 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function register(email: string, password: string) {
-    const res = await fetch('/auth/register', {
+    const res = await fetch(`${API_BASE}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -115,7 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function logout() {
-    await fetch('/auth/logout', { method: 'POST', credentials: 'include' })
+    await fetch(`${API_BASE}/auth/logout`, { method: 'POST', credentials: 'include' })
     localStorage.removeItem('access_token')
     setToken(null)
     setUser(null)
