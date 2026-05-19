@@ -1,5 +1,6 @@
 import httpx
 from datetime import datetime, timedelta, timezone
+from urllib.parse import urlparse
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import RedirectResponse
@@ -26,6 +27,13 @@ GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USER_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
 
 FRONTEND_URL = settings.frontend_url
+
+_hostname = urlparse(settings.frontend_url).hostname
+
+if _hostname in ("localhost", "127.0.0.1"):
+    COOKIE_DOMAIN = None
+else:
+    COOKIE_DOMAIN = f".{_hostname}"
 
 
 async def _redirect_with_tokens(user: User, db: AsyncSession) -> RedirectResponse:
@@ -70,6 +78,7 @@ async def _redirect_with_tokens(user: User, db: AsyncSession) -> RedirectRespons
         samesite="lax",
         max_age=60 * 30,
         path="/",
+        domain=COOKIE_DOMAIN,
     )
 
     response.set_cookie(
@@ -80,6 +89,7 @@ async def _redirect_with_tokens(user: User, db: AsyncSession) -> RedirectRespons
         samesite="lax",
         max_age=settings.refresh_expire_days * 86400,
         path="/",
+        domain=COOKIE_DOMAIN,
     )
 
     return response
@@ -159,7 +169,6 @@ async def github_callback(
 
     if not gh_token:
         logger.warning("github_oauth_token_missing")
-
         raise HTTPException(400, "GitHub OAuth failed")
 
     async with httpx.AsyncClient() as client:
@@ -181,22 +190,11 @@ async def github_callback(
 
     if not primary:
         logger.warning("github_oauth_verified_email_missing")
+        raise HTTPException(400, "No verified email on GitHub account")
 
-        raise HTTPException(
-            400,
-            "No verified email on GitHub account",
-        )
+    logger.info("github_oauth_user_authenticated", email=primary)
 
-    logger.info(
-        "github_oauth_user_authenticated",
-        email=primary,
-    )
-
-    user = await _get_or_create_user(
-        db,
-        primary,
-        AuthProvider.github,
-    )
+    user = await _get_or_create_user(db, primary, AuthProvider.github)
 
     return await _redirect_with_tokens(user, db)
 
@@ -233,9 +231,7 @@ async def google_callback(
                 "client_secret": settings.google_client_secret,
                 "code": code,
                 "grant_type": "authorization_code",
-                "redirect_uri": (
-                    f"{settings.backend_url}/auth/google/callback"
-                ),
+                "redirect_uri": f"{settings.backend_url}/auth/google/callback",
             },
         )
 
@@ -243,7 +239,6 @@ async def google_callback(
 
     if not google_token:
         logger.warning("google_oauth_token_missing")
-
         raise HTTPException(400, "Google OAuth failed")
 
     async with httpx.AsyncClient() as client:
@@ -256,21 +251,10 @@ async def google_callback(
 
     if not email:
         logger.warning("google_oauth_email_missing")
+        raise HTTPException(400, "No email from Google account")
 
-        raise HTTPException(
-            400,
-            "No email from Google account",
-        )
+    logger.info("google_oauth_user_authenticated", email=email)
 
-    logger.info(
-        "google_oauth_user_authenticated",
-        email=email,
-    )
-
-    user = await _get_or_create_user(
-        db,
-        email,
-        AuthProvider.google,
-    )
+    user = await _get_or_create_user(db, email, AuthProvider.google)
 
     return await _redirect_with_tokens(user, db)
