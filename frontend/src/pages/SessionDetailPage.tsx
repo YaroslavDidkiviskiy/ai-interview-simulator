@@ -599,7 +599,7 @@ export default function SessionDetailPage() {
               answerText={lastAnswerText}
               nextQuestion={nextQuestion}
               onNextQuestion={handleQuestionClick}
-              onFinish={isLastQuestion ? () => setPhase('answering') : undefined}
+              onFinish={isLastQuestion && session.status !== 'completed' ? () => setPhase('answering') : undefined}
             />
           )}
         </>
