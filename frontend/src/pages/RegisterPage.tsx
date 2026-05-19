@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext'
 import Layout from '../components/Layout'
 import { redirectAfterAuth } from '../utils/redirectAfterAuth'
 
+const API_BASE = import.meta.env.VITE_API_URL || ''
+
 function GoogleIcon() {
   return (
     <svg className="w-4 h-4" viewBox="0 0 24 24">
