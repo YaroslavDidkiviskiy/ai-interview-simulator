@@ -398,7 +398,7 @@ export default function SessionDetailPage() {
   const nextQuestion = activeQuestion
     ? findNextUnanswered(session.questions, session.answered_question_ids, activeQuestion.id)
     : null
-  const showFinishButton = isLastQuestion && session.status !== 'completed'
+ const showFinishButton = isLastQuestion && phase === 'feedback' && session.status === 'completed'
 
   return (
     <Layout>
