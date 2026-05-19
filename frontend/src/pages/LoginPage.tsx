@@ -5,6 +5,8 @@ import { useAuth } from '../context/AuthContext'
 import Layout from '../components/Layout'
 import { redirectAfterAuth } from '../utils/redirectAfterAuth'
 
+const API_BASE = import.meta.env.VITE_API_URL || ''
+
 function GoogleIcon() {
   return (
     <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -132,10 +134,10 @@ export default function LoginPage() {
           </div>
 
           <div style={{ display: 'flex', gap: 12 }}>
-            <a href="/auth/github" className="oauth-btn">
+            <a href={`${API_BASE}/auth/github`} className="oauth-btn">
               <GithubIcon /> GitHub
             </a>
-            <a href="/auth/google" className="oauth-btn">
+            <a href={`${API_BASE}/auth/google`} className="oauth-btn">
               <GoogleIcon /> Google
             </a>
           </div>

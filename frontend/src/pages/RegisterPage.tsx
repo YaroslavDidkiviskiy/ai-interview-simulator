@@ -162,10 +162,10 @@ export default function RegisterPage() {
           </div>
 
           <div style={{ display: 'flex', gap: 12 }}>
-            <a href="/auth/github" className="oauth-btn">
+            <a href={`${API_BASE}/auth/github`} className="oauth-btn">
               <GithubIcon /> GitHub
             </a>
-            <a href="/auth/google" className="oauth-btn">
+            <a href={`${API_BASE}/auth/google`} className="oauth-btn">
               <GoogleIcon /> Google
             </a>
           </div>
