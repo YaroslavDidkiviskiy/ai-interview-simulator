@@ -129,7 +129,7 @@ def github_login():
     logger.info("github_oauth_started")
 
     params = (
-        f"client_id={settings.github_client_id}"
+        f"client_id={settings.oauth_github_client_id}"
         f"&scope=user:email"
         f"&allow_signup=true"
     )
@@ -148,8 +148,8 @@ async def github_callback(
         token_res = await client.post(
             GITHUB_TOKEN_URL,
             data={
-                "client_id": settings.github_client_id,
-                "client_secret": settings.github_client_secret,
+                "client_id": settings.oauth_github_client_id,
+                "client_secret": settings.oauth_github_client_secret,
                 "code": code,
             },
             headers={"Accept": "application/json"},
