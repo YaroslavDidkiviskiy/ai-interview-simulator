@@ -1,5 +1,7 @@
 """Evaluator factory tests."""
 
+from unittest.mock import MagicMock, patch
+
 import pytest
 
 from app.config import get_settings
@@ -16,9 +18,14 @@ def test_get_ollama_evaluator(monkeypatch):
 
 
 def test_get_gemini_evaluator(monkeypatch):
+    """Factory must return GeminiEvaluator without a real API key (CI has no secrets)."""
     monkeypatch.setenv("EVALUATOR_PROVIDER", "gemini")
+    monkeypatch.setenv("GEMINI_API_KEY", "test-key-not-used-in-ci")
     get_settings.cache_clear()
-    evaluator = get_evaluator()
+
+    with patch("app.services.evaluators.gemini.GeminiClient", return_value=MagicMock()):
+        evaluator = get_evaluator()
+
     assert isinstance(evaluator, GeminiEvaluator)
 
 

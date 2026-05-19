@@ -23,6 +23,7 @@ os.environ.setdefault("DATABASE_URL", "sqlite+aiosqlite:///:memory:")
 os.environ.setdefault("SECRET_KEY", "test-secret-key-for-pytest-only-32b")
 os.environ.setdefault("REDIS_URL", "redis://localhost:6379/15")
 os.environ.setdefault("EVALUATOR_PROVIDER", "ollama")
+os.environ.setdefault("GEMINI_API_KEY", "pytest-dummy-gemini-key")
 os.environ.setdefault("DEBUG", "true")
 
 from app.config import get_settings  # noqa: E402
