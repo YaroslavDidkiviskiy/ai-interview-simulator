@@ -103,11 +103,13 @@ function FeedbackPanel({
   answerText,
   nextQuestion,
   onNextQuestion,
+  onFinish,
 }: {
   fb: FeedbackDto
   answerText: string
   nextQuestion: Question | null
   onNextQuestion: (q: Question) => void
+  onFinish?: () => void
 }) {
   return (
     <div style={{
@@ -168,7 +170,7 @@ function FeedbackPanel({
       )}
 
       {/* Next Question button — показується тільки якщо є невідповіджене питання */}
-      {nextQuestion && (
+      {nextQuestion ? (
         <div style={{
           marginTop: 24,
           paddingTop: 20,
@@ -198,7 +200,22 @@ function FeedbackPanel({
             Next Question <ChevronRight style={{ width: 16, height: 16 }} />
           </button>
         </div>
-      )}
+      ) : onFinish ? (
+        <div style={{
+          marginTop: 24,
+          paddingTop: 20,
+          borderTop: '1px solid #1e293b',
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}>
+          <button
+            onClick={onFinish}
+            className="next-question-btn"
+          >
+            Finish Interview <CheckCircle2 style={{ width: 16, height: 16 }} />
+          </button>
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -582,6 +599,7 @@ export default function SessionDetailPage() {
               answerText={lastAnswerText}
               nextQuestion={nextQuestion}
               onNextQuestion={handleQuestionClick}
+              onFinish={isLastQuestion ? () => setPhase('answering') : undefined}
             />
           )}
         </>
