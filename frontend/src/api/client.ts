@@ -1,11 +1,12 @@
-const BASE = '/api'
+const BASE = (import.meta.env.VITE_API_URL || '') + '/api'
 
 function getToken() {
   return localStorage.getItem('access_token')
 }
 
 async function refreshToken(): Promise<string | null> {
-  const res = await fetch('/auth/refresh', { method: 'POST', credentials: 'include' })
+  const AUTH_BASE = import.meta.env.VITE_API_URL || ''
+  const res = await fetch(`${AUTH_BASE}/auth/refresh`, { method: 'POST', credentials: 'include' })
   if (!res.ok) return null
   const data = await res.json()
   localStorage.setItem('access_token', data.access_token)
