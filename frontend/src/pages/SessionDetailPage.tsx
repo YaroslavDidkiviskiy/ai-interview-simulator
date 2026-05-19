@@ -398,6 +398,7 @@ export default function SessionDetailPage() {
   const nextQuestion = activeQuestion
     ? findNextUnanswered(session.questions, session.answered_question_ids, activeQuestion.id)
     : null
+  const showFinishButton = isLastQuestion && session.status !== 'completed'
 
   return (
     <Layout>
@@ -599,12 +600,11 @@ export default function SessionDetailPage() {
               answerText={lastAnswerText}
               nextQuestion={nextQuestion}
               onNextQuestion={handleQuestionClick}
-              onFinish={isLastQuestion ? () => setPhase('answering') : undefined}
+              onFinish={showFinishButton ? () => setPhase('answering') : undefined}
             />
           )}
         </>
       )}
-
       {/* Questions list */}
       {session.questions.length > 0 && (
         <div style={{ marginTop: 40 }}>
