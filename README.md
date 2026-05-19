@@ -460,8 +460,8 @@ Copy `.env.example` to `.env`. Variables read by the backend (`app/config.py`):
 | `OLLAMA_BASE_URL` | If ollama | Default: `http://localhost:11434` |
 | `OLLAMA_MODEL` | If ollama | Default: `llama3.2:3b` |
 | `OAUTH_GITHUB_CLIENT_ID` | For GitHub OAuth | GitHub OAuth App client ID |
-| `GITHUB_CLIENT_SECRET` | For GitHub OAuth | GitHub OAuth App secret |
-| `OAUTH_GOOGLE_CLIENT_ID` | For Google OAuth | Google Cloud OAuth client ID |
+| `OAUTH_GITHUB_CLIENT_SECRET` | For GitHub OAuth | GitHub OAuth App secret |
+| `GOOGLE_CLIENT_ID` | For Google OAuth | Google Cloud OAuth client ID |
 | `GOOGLE_CLIENT_SECRET` | For Google OAuth | Google Cloud OAuth client secret |
 
 \*Required for OAuth and production CORS.
