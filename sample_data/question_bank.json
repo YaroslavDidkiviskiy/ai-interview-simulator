@@ -1066,6 +1066,926 @@
     "question": "Explain delegates and events in C#."
   },
   {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 2,
+    "question": "What are decorators in Python and how do you create a simple one?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "git",
+    "difficulty": 1,
+    "question": "What is the purpose of a .gitignore file and how do you use it?"
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 3,
+    "question": "What are generators and the yield keyword in Python? When would you use them?"
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "django",
+    "difficulty": 3,
+    "question": "How do Django class-based views differ from function-based views, and what are their advantages?"
+  },
+  {
+    "role": "python_backend",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "architecture",
+    "difficulty": 4,
+    "question": "How would you implement an event-driven architecture in a Python backend, and what tools or patterns would you use?"
+  },
+  {
+    "role": "typescript",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "typescript",
+    "difficulty": 2,
+    "question": "What is the difference between 'interface' and 'type' in TypeScript?"
+  },
+  {
+    "role": "typescript",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "nodejs",
+    "difficulty": 1,
+    "question": "What is Node.js and how does it relate to JavaScript/TypeScript on the backend?"
+  },
+  {
+    "role": "typescript",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "typescript",
+    "difficulty": 3,
+    "question": "How do you use utility types like Partial, Pick, and Omit in TypeScript?"
+  },
+  {
+    "role": "typescript",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "nodejs",
+    "difficulty": 3,
+    "question": "What is middleware in Express.js and how do you implement it using TypeScript?"
+  },
+  {
+    "role": "typescript",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "architecture",
+    "difficulty": 4,
+    "question": "How would you structure a large-scale TypeScript project to ensure maintainability, type safety, and efficient bundling?"
+  },
+  {
+    "role": "java",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "java",
+    "difficulty": 1,
+    "question": "What are primitive types and reference types in Java? Give examples."
+  },
+  {
+    "role": "java",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "build_tools",
+    "difficulty": 2,
+    "question": "What is Maven or Gradle, and why are they used in Java projects?"
+  },
+  {
+    "role": "java",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "java",
+    "difficulty": 3,
+    "question": "What are Java streams and how do they differ from collections?"
+  },
+  {
+    "role": "java",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "spring",
+    "difficulty": 3,
+    "question": "What is the purpose of @Transactional annotation in Spring, and how does it work with propagation levels?"
+  },
+  {
+    "role": "java",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 4,
+    "question": "How does the CompletableFuture API improve asynchronous programming in Java compared to traditional Future?"
+  },
+  {
+    "role": "kotlin",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "kotlin",
+    "difficulty": 2,
+    "question": "What is null safety in Kotlin and how do operators like '?', '!!' and '?:' work?"
+  },
+  {
+    "role": "kotlin",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "android",
+    "difficulty": 1,
+    "question": "What is a Fragment in Android and how does it differ from an Activity?"
+  },
+  {
+    "role": "kotlin",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "kotlin",
+    "difficulty": 3,
+    "question": "How do you use flow in Kotlin coroutines, and how does it compare to LiveData?"
+  },
+  {
+    "role": "kotlin",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "android",
+    "difficulty": 3,
+    "question": "Explain the repository pattern in Android development and how it integrates with ViewModel and Room."
+  },
+  {
+    "role": "kotlin",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "coroutines",
+    "difficulty": 4,
+    "question": "How would you design a coroutine-based cache layer that handles concurrent reads/writes safely in an Android app?"
+  },
+  {
+    "role": "go",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "go",
+    "difficulty": 2,
+    "question": "What are interfaces in Go and how are they satisfied implicitly?"
+  },
+  {
+    "role": "go",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "testing",
+    "difficulty": 2,
+    "question": "What is the difference between 'go test' and 'go test -bench'?"
+  },
+  {
+    "role": "go",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "go",
+    "difficulty": 3,
+    "question": "How does Go's context package help in managing timeouts and cancellation across goroutines?"
+  },
+  {
+    "role": "go",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "rest",
+    "difficulty": 3,
+    "question": "How do you implement request validation and error handling in a Go REST API (for example using Gin or Echo)?"
+  },
+  {
+    "role": "go",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 4,
+    "question": "What are the pitfalls of sharing memory vs communicating via channels, and how would you design a concurrent Go service to avoid deadlocks?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 2,
+    "question": "What is list comprehension in Python and how does it differ from a regular for loop?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 1,
+    "question": "What is the purpose of __init__.py file in a Python package?"
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 3,
+    "question": "What are context managers and the 'with' statement in Python? How do you create a custom context manager?"
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "django",
+    "difficulty": 3,
+    "question": "How do you handle database transactions in Django? What does the atomic() function do?"
+  },
+  {
+    "role": "python_backend",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "architecture",
+    "difficulty": 4,
+    "question": "How do you implement a distributed caching layer for a Python backend using Redis?"
+  },
+  {
+    "role": "typescript",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "javascript",
+    "difficulty": 2,
+    "question": "What are arrow functions in JavaScript/TypeScript and how do they differ from regular functions?"
+  },
+  {
+    "role": "typescript",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "typescript",
+    "difficulty": 2,
+    "question": "What is the 'any' type in TypeScript and why is it usually discouraged?"
+  },
+  {
+    "role": "typescript",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "typescript",
+    "difficulty": 3,
+    "question": "Explain the difference between 'unknown' and 'any' types in TypeScript."
+  },
+  {
+    "role": "typescript",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "nodejs",
+    "difficulty": 3,
+    "question": "How do you manage environment variables securely in a Node.js backend application?"
+  },
+  {
+    "role": "typescript",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "security",
+    "difficulty": 4,
+    "question": "How would you implement JWT authentication and role-based authorization in a TypeScript REST API?"
+  },
+  {
+    "role": "java",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "java",
+    "difficulty": 2,
+    "question": "What are the differences between String, StringBuilder, and StringBuffer in Java?"
+  },
+  {
+    "role": "java",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 2,
+    "question": "What are access modifiers in Java (public, private, protected, default) and where are they applicable?"
+  },
+  {
+    "role": "java",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "java",
+    "difficulty": 3,
+    "question": "What is the Java Collections Framework? Name common interfaces and their most used implementations."
+  },
+  {
+    "role": "java",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "spring",
+    "difficulty": 3,
+    "question": "How do you handle exceptions globally in a Spring REST API using @ControllerAdvice or @ExceptionHandler?"
+  },
+  {
+    "role": "java",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "microservices",
+    "difficulty": 4,
+    "question": "How would you design resilient inter-service communication in a Spring microservices architecture using message brokers like RabbitMQ or Kafka?"
+  },
+  {
+    "role": "kotlin",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "kotlin",
+    "difficulty": 1,
+    "question": "What is the difference between 'val' and 'var' in Kotlin?"
+  },
+  {
+    "role": "kotlin",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "kotlin",
+    "difficulty": 2,
+    "question": "How do you safely handle nullability when calling Java code from Kotlin?"
+  },
+  {
+    "role": "kotlin",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "kotlin",
+    "difficulty": 3,
+    "question": "Explain the difference between 'lateinit' and 'lazy' in Kotlin and when to use each."
+  },
+  {
+    "role": "kotlin",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "android",
+    "difficulty": 3,
+    "question": "How do you use Kotlin coroutines to perform a network request without blocking the main thread in Android?"
+  },
+  {
+    "role": "kotlin",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "android",
+    "difficulty": 4,
+    "question": "How would you implement a dependency injection framework like Hilt or Koin in a multi-module Android project, and what are the architectural benefits?"
+  },
+  {
+    "role": "go",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "go",
+    "difficulty": 2,
+    "question": "What is the zero value in Go and how does it affect variable initialization?"
+  },
+  {
+    "role": "go",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "go",
+    "difficulty": 2,
+    "question": "What is the purpose of the 'defer' keyword in Go?"
+  },
+  {
+    "role": "go",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "rest",
+    "difficulty": 3,
+    "question": "How do you create an HTTP client in Go to consume and parse a third-party REST API?"
+  },
+  {
+    "role": "go",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "go",
+    "difficulty": 3,
+    "question": "What are Go modules and how do you manage project dependencies with go.mod?"
+  },
+  {
+    "role": "go",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "performance",
+    "difficulty": 4,
+    "question": "How would you optimize a high-concurrency Go web server? Discuss connection pooling, garbage collector tuning, and profiling tools."
+  },
+  {
+    "role": "rust",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "rust",
+    "difficulty": 1,
+    "question": "What does it mean that variables are immutable by default in Rust, and how do you make one mutable?"
+  },
+  {
+    "role": "rust",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "rust",
+    "difficulty": 2,
+    "question": "How do you handle recoverable errors with Result and represent absence of value with Option in Rust?"
+  },
+  {
+    "role": "rust",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "rust",
+    "difficulty": 3,
+    "question": "What are closures in Rust and how do they capture variables from their environment?"
+  },
+  {
+    "role": "rust",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 3,
+    "question": "Explain the concept of 'Fearless Concurrency' in Rust."
+  },
+  {
+    "role": "rust",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 4,
+    "question": "How would you implement a thread pool in Rust using channels and worker threads to process tasks concurrently?"
+  },
+  {
+    "role": "cpp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "memory",
+    "difficulty": 2,
+    "question": "What is the difference between 'new' and 'malloc' in C++?"
+  },
+  {
+    "role": "cpp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "cpp",
+    "difficulty": 2,
+    "question": "What are inline functions in C++ and when are they typically used?"
+  },
+  {
+    "role": "cpp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "oop",
+    "difficulty": 3,
+    "question": "Explain copy constructor and copy assignment operator. What is the Rule of Three/Five/Zero in C++?"
+  },
+  {
+    "role": "cpp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 3,
+    "question": "How do you use std::unique_lock with std::condition_variable for thread synchronization?"
+  },
+  {
+    "role": "cpp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "cpp",
+    "difficulty": 4,
+    "question": "How can modern C++ features (C++17/20), like structured bindings, std::optional, and std::variant, improve code safety and readability?"
+  },
+  {
+    "role": "csharp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "csharp",
+    "difficulty": 1,
+    "question": "Is there a difference between 'string' and 'String' in C#? Explain."
+  },
+  {
+    "role": "csharp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "csharp",
+    "difficulty": 2,
+    "question": "What is the purpose of the 'using' statement in C#?"
+  },
+  {
+    "role": "csharp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "dotnet",
+    "difficulty": 3,
+    "question": "Explain the built-in dependency injection container in .NET Core and the difference between Singleton, Scoped, and Transient service lifetimes."
+  },
+  {
+    "role": "csharp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "async",
+    "difficulty": 3,
+    "question": "Why is 'async void' generally discouraged in C#, and in what situations is it acceptable?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 1,
+    "question": "What is the difference between mutable and immutable types in Python? Give examples."
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 2,
+    "question": "How do *args and **kwargs work in function definitions, and when would you use them?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 1,
+    "question": "What is a virtual environment in Python and why is it important?"
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 2,
+    "question": "Explain the difference between 'break', 'continue', and 'pass' statements in loops."
+  },
+  {
+    "role": "python_backend",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 2,
+    "question": "How do you read a file line by line in Python and why is it memory‑efficient?"
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 3,
+    "question": "What are metaclasses in Python and in which scenarios might you need them?"
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 3,
+    "question": "Explain the difference between __new__ and __init__ methods."
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 3,
+    "question": "How does Python's import system work, and what is the purpose of __all__ and relative imports?"
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 3,
+    "question": "What is monkey patching? Is it considered a good practice? Give an example."
+  },
+  {
+    "role": "python_backend",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 3,
+    "question": "How do you use __slots__ in a Python class and what are its advantages and limitations?"
+  },
+  {
+    "role": "python_backend",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 4,
+    "question": "What are the differences between asyncio's event loop, threads, and processes? When would you use each in a high‑performance application?"
+  },
+  {
+    "role": "python_backend",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 4,
+    "question": "How can you implement a custom Python module in C using the C API or ctypes, and what are the performance trade‑offs?"
+  },
+  {
+    "role": "python_backend",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 4,
+    "question": "Explain the internals of a Python dict: how does hashing work, why are collisions handled, and what changed in Python 3.6+?"
+  },
+  {
+    "role": "python_backend",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 4,
+    "question": "How would you design a Python library that works both synchronously and asynchronously without duplicating logic?"
+  },
+  {
+    "role": "python_backend",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "python",
+    "difficulty": 5,
+    "question": "Describe how you would optimize a data processing pipeline in Python using multiprocessing, shared memory, and on‑the‑fly serialization."
+  },
+  {
+    "role": "csharp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "csharp",
+    "difficulty": 1,
+    "question": "What is the difference between 'throw', 'throw ex', and 'throw new Exception()' in C# exception handling?"
+  },
+  {
+    "role": "csharp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "csharp",
+    "difficulty": 2,
+    "question": "How do properties differ from public fields in C#, and why are they recommended?"
+  },
+  {
+    "role": "csharp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "csharp",
+    "difficulty": 1,
+    "question": "What is boxing and unboxing in C#, and why can it cause performance issues?"
+  },
+  {
+    "role": "csharp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "csharp",
+    "difficulty": 3,
+    "question": "Explain the IDisposable interface and the Dispose pattern. How does the 'using' statement relate to it?"
+  },
+  {
+    "role": "csharp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "dotnet",
+    "difficulty": 3,
+    "question": "What is the difference between IQueryable and IEnumerable in LINQ, and when should you prefer one over the other?"
+  },
+  {
+    "role": "csharp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "async",
+    "difficulty": 3,
+    "question": "What is ConfigureAwait(false) and when is it essential to use it in library code?"
+  },
+  {
+    "role": "csharp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "csharp",
+    "difficulty": 4,
+    "question": "Explain how Span<T> and Memory<T> improve performance and how they differ from arrays and ArraySegment."
+  },
+  {
+    "role": "csharp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "dotnet",
+    "difficulty": 4,
+    "question": "How does the .NET thread pool work, and what are the best practices for scheduling work on it to avoid starvation?"
+  },
+  {
+    "role": "any",
+    "level": "any",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "Can you walk us through your resume and highlight the most relevant experience for this role?"
+  },
+  {
+    "role": "any",
+    "level": "any",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "How do you prioritize tasks when you have multiple deadlines?"
+  },
+  {
+    "role": "any",
+    "level": "any",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "Describe a situation where you disagreed with a manager or colleague. How did you resolve it?"
+  },
+  {
+    "role": "any",
+    "level": "any",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "What do you know about our company and the products/services we offer?"
+  },
+  {
+    "role": "any",
+    "level": "any",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "What kind of work environment helps you to be the most productive?"
+  },
+  {
+    "role": "any",
+    "level": "any",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "Have you ever made a mistake at work? How did you handle it and what did you learn?"
+  },
+  {
+    "role": "any",
+    "level": "any",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "How would your previous colleagues or managers describe you?"
+  },
+  {
+    "role": "any",
+    "level": "any",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "What salary range are you expecting for this role?"
+  },
+  {
+    "role": "any",
+    "level": "any",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "Are you interviewing with other companies at the moment? How does this opportunity compare?"
+  },
+  {
+    "role": "any",
+    "level": "any",
+    "interview_type": "hr",
+    "topic": "hr",
+    "difficulty": 1,
+    "question": "Do you have any questions for us about the role, team, or company?"
+  },
+  {
+    "role": "csharp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "performance",
+    "difficulty": 4,
+    "question": "What strategies can you use to reduce memory allocations in a high‑throughput .NET application? Discuss pooling, structs, and Span."
+  },
+  {
+    "role": "csharp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "security",
+    "difficulty": 4,
+    "question": "How would you implement a secure authentication and authorization pipeline in an ASP.NET Core Web API using JWT and custom policies?"
+  },
+  {
+    "role": "csharp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "dotnet",
+    "difficulty": 4,
+    "question": "How would you implement a gRPC service in .NET, and what are the trade-offs compared to REST?"
+  },
+  {
+    "role": "rust",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "rust",
+    "difficulty": 2,
+    "question": "What is pattern matching in Rust and how is it used with match and if let?"
+  },
+  {
+    "role": "rust",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "testing",
+    "difficulty": 2,
+    "question": "How do you write and run unit tests in Rust using the built-in test framework?"
+  },
+  {
+    "role": "rust",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "rust",
+    "difficulty": 3,
+    "question": "What are traits in Rust, and how do you use them to define shared behavior?"
+  },
+  {
+    "role": "rust",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "memory",
+    "difficulty": 3,
+    "question": "Explain the difference between a String and a &str in Rust, and when to use each."
+  },
+  {
+    "role": "rust",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "systems",
+    "difficulty": 4,
+    "question": "How would you build a concurrent and safe key-value store in Rust without using a database? Discuss traits, lifetimes, and sync primitives."
+  },
+  {
+    "role": "cpp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "cpp",
+    "difficulty": 2,
+    "question": "What is function overloading in C++ and how does the compiler differentiate overloaded functions?"
+  },
+  {
+    "role": "cpp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "stl",
+    "difficulty": 2,
+    "question": "How do you iterate over a std::map and print all key-value pairs?"
+  },
+  {
+    "role": "cpp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "cpp",
+    "difficulty": 3,
+    "question": "What are smart pointers (unique_ptr, shared_ptr) and how do they help prevent memory leaks?"
+  },
+  {
+    "role": "cpp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "concurrency",
+    "difficulty": 3,
+    "question": "How do you use std::async and std::future to run tasks asynchronously?"
+  },
+  {
+    "role": "cpp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "optimization",
+    "difficulty": 4,
+    "question": "What techniques can you use to reduce cache misses and improve data locality in performance-critical C++ code?"
+  },
+  {
+    "role": "csharp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "csharp",
+    "difficulty": 2,
+    "question": "What are value types and reference types in C#? How do they behave differently?"
+  },
+  {
+    "role": "csharp",
+    "level": "junior",
+    "interview_type": "technical",
+    "topic": "dotnet",
+    "difficulty": 2,
+    "question": "What is dependency injection in ASP.NET Core and how do you register a service?"
+  },
+  {
+    "role": "csharp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "csharp",
+    "difficulty": 3,
+    "question": "How does LINQ differ from traditional foreach loops, and what are deferred execution and immediate execution?"
+  },
+  {
+    "role": "csharp",
+    "level": "middle",
+    "interview_type": "technical",
+    "topic": "async",
+    "difficulty": 3,
+    "question": "What is the difference between Task.Run and directly calling an async method in C#?"
+  },
+  {
+    "role": "csharp",
+    "level": "senior",
+    "interview_type": "technical",
+    "topic": "dotnet",
+    "difficulty": 4,
+    "question": "How would you implement a background job processing system using IHostedService, channels, and Dependency Injection in .NET?"
+  },
+  {
     "role": "csharp",
     "level": "middle",
     "interview_type": "technical",
