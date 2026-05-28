@@ -6,7 +6,7 @@
 
 ---
 
-### Live demo: prepario.space
+### Live demo: [prepario.space](https://prepario.space/)
 
 ## Table of Contents
 
