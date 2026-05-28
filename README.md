@@ -6,7 +6,7 @@
 
 ---
 
-### Live demo: https://prepario-frontend-gmoyv6mtha-ew.a.run.app/
+### Live demo: prepario.space
 
 ## Table of Contents
 
