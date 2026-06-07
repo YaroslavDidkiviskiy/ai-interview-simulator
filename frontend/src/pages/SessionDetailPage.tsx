@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Flag, ChevronRight, AlertTriangle, Loader2, CheckCircle2, Zap } from 'lucide-react'
+import { Flag, ChevronRight, AlertTriangle, Loader2, CheckCircle2, Zap, Mic, MicOff } from 'lucide-react'
+import { useVoiceRecognition } from '../hooks/useVoiceRecognition'
 import Layout from '../components/Layout'
 import {
   FeedbackDto, getSession, getQuestionFeedback,
@@ -75,9 +76,6 @@ function TopicBadge({ topic }: { topic: string }) {
   )
 }
 
-// Знаходить перше невідповіджене питання після поточного по order_index.
-// Якщо після поточного немає — бере перше невідповіджене з початку.
-// Якщо всі відповіджені — повертає null.
 function findNextUnanswered(
   questions: Question[],
   answeredIds: number[],
@@ -94,16 +92,11 @@ function findNextUnanswered(
     if (after.length > 0) return after[0]
   }
 
-  // fallback: перше невідповіджене по order_index (wrap around)
   return [...unanswered].sort((a, b) => a.order_index - b.order_index)[0]
 }
 
 function FeedbackPanel({
-  fb,
-  answerText,
-  nextQuestion,
-  onNextQuestion,
-  onFinish,
+  fb, answerText, nextQuestion, onNextQuestion, onFinish,
 }: {
   fb: FeedbackDto
   answerText: string
@@ -119,7 +112,6 @@ function FeedbackPanel({
       padding: '28px 28px 24px',
       animation: 'slideUp 0.4s cubic-bezier(.4,0,.2,1)',
     }}>
-      {/* Answer recap */}
       <div style={{
         marginBottom: 20, padding: '12px 16px',
         background: '#0f172a', border: '1px solid #1e293b',
@@ -128,7 +120,6 @@ function FeedbackPanel({
         {answerText}
       </div>
 
-      {/* Score rings */}
       <div style={{ display: 'flex', gap: 20, justifyContent: 'center', marginBottom: 24 }}>
         <ScoreRing value={fb.score} label="Overall" />
         <ScoreRing value={fb.correctness_score} label="Correct" />
@@ -136,12 +127,10 @@ function FeedbackPanel({
         <ScoreRing value={fb.confidence_score} label="Confidence" />
       </div>
 
-      {/* Feedback text */}
       <p style={{ color: '#cbd5e1', lineHeight: 1.7, marginBottom: 20, fontSize: 14 }}>
         {fb.feedback_text}
       </p>
 
-      {/* Missing points */}
       {fb.missing_points.length > 0 && (
         <div style={{ marginBottom: 16 }}>
           <p style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>
@@ -155,7 +144,6 @@ function FeedbackPanel({
         </div>
       )}
 
-      {/* Better answer */}
       {fb.better_answer.length > 0 && (
         <div style={{ marginBottom: nextQuestion ? 24 : 0 }}>
           <p style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8 }}>
@@ -169,17 +157,10 @@ function FeedbackPanel({
         </div>
       )}
 
-      {/* Next Question button — показується тільки якщо є невідповіджене питання */}
       {nextQuestion ? (
         <div style={{
-          marginTop: 24,
-          paddingTop: 20,
-          borderTop: '1px solid #1e293b',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 12,
-          flexWrap: 'wrap',
+          marginTop: 24, paddingTop: 20, borderTop: '1px solid #1e293b',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap',
         }}>
           <div style={{ minWidth: 0 }}>
             <p style={{ margin: 0, fontSize: 11, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
@@ -187,31 +168,18 @@ function FeedbackPanel({
             </p>
             <p style={{
               margin: 0, fontSize: 13, color: '#94a3b8',
-              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-              maxWidth: 300,
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 300,
             }}>
               {nextQuestion.text}
             </p>
           </div>
-          <button
-            onClick={() => onNextQuestion(nextQuestion)}
-            className="next-question-btn"
-          >
+          <button onClick={() => onNextQuestion(nextQuestion)} className="next-question-btn">
             Next Question <ChevronRight style={{ width: 16, height: 16 }} />
           </button>
         </div>
       ) : onFinish ? (
-        <div style={{
-          marginTop: 24,
-          paddingTop: 20,
-          borderTop: '1px solid #1e293b',
-          display: 'flex',
-          justifyContent: 'flex-end',
-        }}>
-          <button
-            onClick={onFinish}
-            className="next-question-btn"
-          >
+        <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid #1e293b', display: 'flex', justifyContent: 'flex-end' }}>
+          <button onClick={onFinish} className="next-question-btn">
             Finish Interview <CheckCircle2 style={{ width: 16, height: 16 }} />
           </button>
         </div>
@@ -257,11 +225,9 @@ function QuestionListItem({
           background: isActive ? '#4f46e5' : '#0f172a',
           border: isActive ? 'none' : '1px solid #334155',
         }}>
-          <span style={{
-            fontSize: 11, fontWeight: 700,
-            color: isActive ? '#fff' : '#475569',
-            lineHeight: 1, display: 'block',
-          }}>{index + 1}</span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: isActive ? '#fff' : '#475569', lineHeight: 1, display: 'block' }}>
+            {index + 1}
+          </span>
         </div>
       )}
 
@@ -281,9 +247,8 @@ function QuestionListItem({
 
       {isAnswered && (
         <span style={{
-          fontSize: 10, color: '#4ade80', fontWeight: 700,
-          flexShrink: 0, letterSpacing: '0.05em',
-          background: '#052e1660', border: '1px solid #4ade8030',
+          fontSize: 10, color: '#4ade80', fontWeight: 700, flexShrink: 0,
+          letterSpacing: '0.05em', background: '#052e1660', border: '1px solid #4ade8030',
           padding: '2px 8px', borderRadius: 999,
         }}>
           Done
@@ -307,6 +272,16 @@ export default function SessionDetailPage() {
   const [activeQuestion, setActiveQuestion] = useState<Question | null>(null)
   const [isLastQuestion, setIsLastQuestion] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const { status: voiceStatus, isSupported: voiceSupported, errorMessage: voiceError, startListening, stopListening } =
+    useVoiceRecognition({
+      lang: 'uk-UA',
+      onResult: (text) => {
+        setAnswer(prev => prev ? `${prev} ${text}` : text)
+      },
+    })
+
+  const isListening = voiceStatus === 'listening'
 
   const fetchSession = useCallback(() => {
     if (!sessionId) return
@@ -391,20 +366,17 @@ export default function SessionDetailPage() {
   const shownIndex = session.answered_question_ids.length
   const progress = Math.round((shownIndex / session.total_questions) * 100)
   const level = formatLevelLabel(session.level)
-
-  // Рахуємо nextQuestion для поточного активного питання.
-  // answered_question_ids вже включає activeQuestion якщо щойно відповіли
-  // (бо handleSubmit оновлює session state перед setPhase('feedback')).
   const nextQuestion = activeQuestion
     ? findNextUnanswered(session.questions, session.answered_question_ids, activeQuestion.id)
     : null
- const showFinishButton = isLastQuestion && phase === 'feedback' && session.status === 'completed'
+  const showFinishButton = isLastQuestion && phase === 'feedback' && session.status === 'completed'
 
   return (
     <Layout>
       <style>{`
         @keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
         @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+        @keyframes micPulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
         .answer-textarea {
           width: 100%; box-sizing: border-box;
           background: #0f172a; color: #e2e8f0;
@@ -525,7 +497,6 @@ export default function SessionDetailPage() {
         </div>
       ) : (
         <>
-          {/* Active question card */}
           {activeQuestion && (
             <div style={{
               padding: '24px 28px', borderRadius: 20, marginBottom: 20,
@@ -547,35 +518,76 @@ export default function SessionDetailPage() {
             </div>
           )}
 
-          {/* Loading feedback spinner */}
           {phase === 'loading_feedback' && (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 0', color: '#475569', gap: 10 }}>
               <Loader2 className="w-5 h-5 animate-spin" /> Loading feedback…
             </div>
           )}
 
-          {/* Answer form — тільки для невідповіджених питань */}
           {(phase === 'answering' || phase === 'submitting') && activeQuestion && !session.answered_question_ids.includes(activeQuestion.id) && (
             <form onSubmit={handleSubmit} style={{ marginBottom: 8, animation: 'fadeIn 0.3s' }}>
-              <textarea
-                ref={textareaRef}
-                className="answer-textarea"
-                value={answer}
-                onChange={e => setAnswer(e.target.value)}
-                placeholder="Type your answer here…"
-                rows={6}
-                disabled={phase === 'submitting'}
-                maxLength={5000}
-              />
+              <div style={{ position: 'relative' }}>
+                <textarea
+                  ref={textareaRef}
+                  className="answer-textarea"
+                  value={answer}
+                  onChange={e => setAnswer(e.target.value)}
+                  placeholder="Type your answer here…"
+                  rows={6}
+                  disabled={phase === 'submitting'}
+                  maxLength={5000}
+                  style={{ paddingRight: 56 }}
+                />
+                {voiceSupported && (
+                  <button
+                    type="button"
+                    onClick={isListening ? stopListening : startListening}
+                    disabled={phase === 'submitting'}
+                    title={isListening ? 'Stop recording' : 'Voice input'}
+                    style={{
+                      position: 'absolute', top: 10, right: 10,
+                      width: 36, height: 36, borderRadius: 10,
+                      border: `1px solid ${isListening ? '#f8717160' : '#334155'}`,
+                      background: isListening ? '#450a0a' : '#1e293b',
+                      color: isListening ? '#f87171' : '#64748b',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      cursor: 'pointer', transition: 'all 0.2s', zIndex: 1,
+                      animation: isListening ? 'micPulse 1.5s ease-in-out infinite' : 'none',
+                    }}
+                  >
+                    {isListening
+                      ? <MicOff style={{ width: 16, height: 16 }} />
+                      : <Mic style={{ width: 16, height: 16 }} />
+                    }
+                  </button>
+                )}
+              </div>
+              {voiceError && (
+                <p style={{ color: '#fb923c', fontSize: 12, margin: '6px 0 0', display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <AlertTriangle style={{ width: 12, height: 12 }} /> {voiceError}
+                </p>
+              )}
+
               {submitError && (
                 <p style={{ color: '#f87171', fontSize: 13, margin: '8px 0 0', display: 'flex', alignItems: 'center', gap: 6 }}>
                   <AlertTriangle className="w-4 h-4" /> {submitError}
                 </p>
               )}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12 }}>
-                <span style={{ fontSize: 11, color: '#334155', fontVariantNumeric: 'tabular-nums' }}>
-                  {answer.trim().length} / 5000
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontSize: 11, color: '#334155', fontVariantNumeric: 'tabular-nums' }}>
+                    {answer.trim().length} / 5000
+                  </span>
+                  {isListening && (
+                    <span style={{ color: '#f87171', fontSize: 12, display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <span style={{
+                        width: 6, height: 6, borderRadius: '50%', background: '#f87171',
+                        display: 'inline-block', animation: 'micPulse 1s ease-in-out infinite',
+                      }} />
+                      Listening…
+                    </span>
+                  )}
+                </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   {isLastQuestion && (
                     <span style={{ fontSize: 12, color: '#4ade80', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -593,7 +605,6 @@ export default function SessionDetailPage() {
             </form>
           )}
 
-          {/* Feedback panel з Next Question кнопкою всередині */}
           {phase === 'feedback' && lastFeedback && (
             <FeedbackPanel
               fb={lastFeedback}
@@ -605,7 +616,7 @@ export default function SessionDetailPage() {
           )}
         </>
       )}
-      {/* Questions list */}
+
       {session.questions.length > 0 && (
         <div style={{ marginTop: 40 }}>
           <p style={{ fontSize: 11, fontWeight: 700, color: '#334155', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 12 }}>
