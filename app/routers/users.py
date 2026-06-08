@@ -119,7 +119,7 @@ async def verify_email(
     return {"ok": True}
 
 
-@router.post("/me/send-delete-account-verification")
+@router.post("/me/send-delete-account-verification", dependencies=[Depends(rate_limit_send_verification_code)])
 async def send_delete_verification_code(
     current_user: User = Depends(get_current_user),
     repo: EmailVerificationRepository = Depends(get_account_delete_verification_repo),
