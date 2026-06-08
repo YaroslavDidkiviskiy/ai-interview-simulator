@@ -1,3 +1,4 @@
+import ssl
 from celery import Celery
 from celery.schedules import crontab
 from app.config import get_settings
@@ -11,6 +12,15 @@ celery_app = Celery(
     include=["app.tasks.email_tasks"],
 )
 
+if settings.redis_url.startswith("rediss://"):
+    celery_app.conf.broker_use_ssl = {
+        "ssl_cert_reqs": ssl.CERT_NONE,
+    }
+
+    celery_app.conf.redis_backend_use_ssl = {
+        "ssl_cert_reqs": ssl.CERT_NONE,
+    }
+
 celery_app.conf.update(
     task_serializer="json",
     result_serializer="json",
@@ -21,8 +31,8 @@ celery_app.conf.update(
 )
 
 celery_app.conf.beat_schedule = {
-    'cleanup-unverified-users': {
-        'task': 'cleanup_unverified_users',
-        'schedule': crontab(hour=3, minute=0),
+    "cleanup-unverified-users": {
+        "task": "cleanup_unverified_users",
+        "schedule": crontab(hour=3, minute=0),
     },
 }
