@@ -5,14 +5,22 @@ from datetime import datetime, timedelta, timezone
 
 from app.db import get_db
 from app.auth.security import verify_password, hash_password
-from app.schemas.user import ChangePasswordRequest, SetPasswordRequest
+from app.rate_limiter import rate_limit_send_verification_code
+from app.schemas.user import ChangePasswordRequest, SetPasswordRequest, VerifyCodeRequest
 from app.models.feedback import Feedback
 from app.models.question import Question
 from app.models.session import InterviewSession
 from app.schemas.user import MeResponse
 from app.schemas.session import SessionRead
-from app.auth.dependencies import get_current_user
+from app.auth.dependencies import get_current_user, require_verified_email
 from app.auth.models import User
+from app.repositories.email_verification import EmailVerificationRepository, get_email_verification_repo
+from app.tasks.email_tasks import send_verification_email
+from app.logging import get_logger
+
+
+logger = get_logger(__name__)
+
 
 router = APIRouter(prefix="/api/users", tags=["users"])
 
@@ -25,6 +33,7 @@ async def me(current_user: User = Depends(get_current_user)):
         "role": current_user.role.value,
         "auth_provider": current_user.auth_provider.value,
         "has_password": current_user.password is not None,
+        "email_verified": current_user.email_verified,
     }
 
 
@@ -32,7 +41,7 @@ async def me(current_user: User = Depends(get_current_user)):
 async def change_password(
     body: ChangePasswordRequest,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_verified_email),
 ):
     if current_user.password is None:
         raise HTTPException(
@@ -62,6 +71,51 @@ async def set_password(
         )
     current_user.password = hash_password(body.password)
     await db.commit()
+    return {"ok": True}
+
+
+@router.post("/me/send-verification-code", dependencies=[Depends(rate_limit_send_verification_code)])
+async def send_verification_code(
+    current_user: User = Depends(get_current_user),
+    repo: EmailVerificationRepository = Depends(get_email_verification_repo),
+):
+    if current_user.email_verified:
+        raise HTTPException(status_code=400, detail="Email already verified")
+
+    if current_user.auth_provider.value != "local":
+        raise HTTPException(status_code=400, detail="OAuth accounts are verified automatically")
+
+    code = repo.generate_code()
+    await repo.save_code(current_user.id, code)
+    send_verification_email.delay(current_user.email, code)
+
+    logger.info("verification_code_sent", user_id=current_user.id)
+    return {"ok": True}
+
+
+@router.post("/me/verify-email")
+async def verify_email(
+    body: VerifyCodeRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+    repo: EmailVerificationRepository = Depends(get_email_verification_repo),
+):
+    if current_user.email_verified:
+        raise HTTPException(status_code=400, detail="Email already verified")
+
+    stored_code = await repo.get_code(current_user.id)
+
+    if not stored_code:
+        raise HTTPException(status_code=400, detail="Code expired or not found. Request a new one")
+
+    if stored_code != body.code:
+        raise HTTPException(status_code=400, detail="Invalid code")
+
+    current_user.email_verified = True
+    await db.commit()
+    await repo.delete_code(current_user.id)
+
+    logger.info("email_verified", user_id=current_user.id)
     return {"ok": True}
 
 

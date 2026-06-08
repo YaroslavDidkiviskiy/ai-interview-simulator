@@ -116,6 +116,7 @@ async def _get_or_create_user(
             email=email,
             password=None,
             auth_provider=provider,
+            email_verified=True
         )
 
         db.add(user)
