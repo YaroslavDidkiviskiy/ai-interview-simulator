@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Layout from '../components/Layout'
 import { toast } from '../components/Toast'
 import { changePassword, getMe, setPassword, Me } from '../api/client'
+import DeleteAccountModal from '../components/DeleteAccountModal'
 import { Loader2, AlertCircle, KeyRound, Bell, Shield, Trash2, ChevronRight, Eye, EyeOff } from 'lucide-react'
 
 type Section = 'password' | null
@@ -9,13 +10,12 @@ type Section = 'password' | null
 export default function SettingsPage() {
   const [activeSection, setActiveSection] = useState<Section>(null)
   const [me, setMe] = useState<Me | null>(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   useEffect(() => {
     getMe().then(setMe).catch(() => {})
   }, [])
 
-  // Після успішної зміни/встановлення пароля — рефетч me
-  // щоб has_password оновився і UI перемкнувся
   async function handlePasswordSuccess() {
     setActiveSection(null)
     const updated = await getMe().catch(() => null)
@@ -120,14 +120,17 @@ export default function SettingsPage() {
             icon={<Trash2 size={15} color="#f87171" />}
             title="Delete Account"
             desc="Permanently delete your account and all data"
-            onAction={() => {}}
+            onAction={() => setShowDeleteModal(true)}
             actionLabel="Delete"
             actionDestructive
-            disabled
           />
 
         </div>
       </div>
+
+      {showDeleteModal && (
+        <DeleteAccountModal onClose={() => setShowDeleteModal(false)} />
+      )}
     </Layout>
   )
 }
@@ -199,7 +202,6 @@ function SettingsRow({
   )
 }
 
-// Форма зміни пароля — для юзерів у яких вже є пароль
 function ChangePasswordForm({ onSuccess }: { onSuccess: () => void }) {
   const [current, setCurrent] = useState('')
   const [next, setNext] = useState('')
@@ -242,7 +244,6 @@ function ChangePasswordForm({ onSuccess }: { onSuccess: () => void }) {
   )
 }
 
-// Форма встановлення пароля — для OAuth юзерів без пароля
 function SetPasswordForm({ onSuccess }: { onSuccess: () => void }) {
   const [next, setNext] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -282,8 +283,6 @@ function SetPasswordForm({ onSuccess }: { onSuccess: () => void }) {
     </form>
   )
 }
-
-// Shared subcomponents
 
 function FormError({ error }: { error: string | null }) {
   if (!error) return null
