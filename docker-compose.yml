@@ -15,30 +15,6 @@ services:
       timeout: 3s
       retries: 5
 
-  # !!! instead of gemini if needed
-  # ollama:
-  #   image: ollama/ollama:latest
-  #   ports:
-  #     - "11434:11434"
-  #   volumes:
-  #     - ollama_data:/root/.ollama
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "ollama list || exit 1"]
-  #     interval: 5s
-  #     timeout: 5s
-  #     retries: 10
-
-  # ollama-init:
-  #   image: ollama/ollama:latest
-  #   depends_on:
-  #     ollama:
-  #       condition: service_healthy
-  #   volumes:
-  #     - ollama_data:/root/.ollama
-  #   entrypoint: ["ollama", "pull", "llama3.2:3b"]
-  #   environment:
-  #     OLLAMA_HOST: http://ollama:11434
-
   app:
     build: .
     ports:
@@ -51,9 +27,34 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      # if u use ollama instead of gemini
-      # ollama-init: 
-      #   condition: service_completed_successfully
+      redis_container:
+        condition: service_healthy
+
+  celery_worker:
+    build: .
+    command: celery -A app.celery_app worker --loglevel=info --concurrency=2
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/ai_interview_simulator
+      REDIS_URL: redis://redis_container:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis_container:
+        condition: service_healthy
+
+  celery_beat:
+    build: .
+    command: celery -A app.celery_app beat --loglevel=info
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/ai_interview_simulator
+      REDIS_URL: redis://redis_container:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
       redis_container:
         condition: service_healthy
 
@@ -66,7 +67,7 @@ services:
       - "80:80"
     depends_on:
       - app
-    
+
   redis_gui:
     image: redis/redisinsight:latest
     ports:

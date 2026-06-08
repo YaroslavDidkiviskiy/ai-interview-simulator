@@ -34,6 +34,8 @@ class Settings(BaseSettings):
     oauth_github_client_id: str = Field(default="", alias="OAUTH_GITHUB_CLIENT_ID")
     google_client_id: str = Field(default="", alias="GOOGLE_CLIENT_ID")
 
+    mailtrap_api_token: str = Field(default="", alias="MAILTRAP_API_TOKEN")
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
