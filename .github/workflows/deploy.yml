@@ -99,7 +99,7 @@ jobs:
             --min-instances=0 \
             --max-instances=2
 
-- name: Deploy Celery Worker to Cloud Run
+      - name: Deploy Celery Worker to Cloud Run
         run: |
           gcloud run deploy prepario-celery-worker \
             --image=${{ env.BACKEND_IMAGE }}:${{ github.sha }} \
