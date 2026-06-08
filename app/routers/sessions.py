@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.dependencies import get_current_user
+from app.auth.dependencies import get_current_user, require_verified_email
 from app.auth.models import User
 from app.logging import get_logger
 from app.db import get_db
@@ -23,7 +23,7 @@ logger = get_logger(__name__)
 async def create_session(
     session_data: SessionCreateSchema,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_verified_email),
 ):
     logger.info(
         "create_session_request",
