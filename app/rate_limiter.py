@@ -6,12 +6,7 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, Request, status
 from redis.asyncio import Redis
 
-from app.config import get_settings
-
-
-def get_redis() -> Redis:
-    settings = get_settings()
-    return Redis.from_url(settings.redis_url, decode_responses=True)
+from app.repositories.email_verification import get_redis
 
 
 class RateLimiter:
@@ -65,3 +60,5 @@ def rate_limiter_factory(endpoint: str, max_requests: int, window_seconds: int):
 rate_limit_login = rate_limiter_factory("login",    3, 60)   # 3 req/m
 rate_limit_register = rate_limiter_factory("register", 3,  60)   # 3 req/m
 rate_limit_answers  = rate_limiter_factory("answers",  4, 60)   # 4 req/m
+
+rate_limit_send_verification_code = rate_limiter_factory("verification-code", 1, 60)
