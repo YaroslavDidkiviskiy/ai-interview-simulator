@@ -12,11 +12,13 @@ def make_user(
     password: str | None = VALID_PASSWORD,
     *,
     is_active: bool = True,
+    email_verified: bool = True,
 ) -> User:
     return User(
         email=email,
         password=hash_password(password) if password else None,
         is_active=is_active,
+        email_verified=email_verified,
     )
 
 
