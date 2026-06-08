@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, field_validator
 import string
 
+
 def validate_password_complexity(v: str) -> str:
     if not any(c.isupper() for c in v):
         raise ValueError("Password must contain at least one uppercase letter")
@@ -11,12 +12,17 @@ def validate_password_complexity(v: str) -> str:
     return v
 
 
+class VerifyCodeRequest(BaseModel):
+    code: str
+
+
 class MeResponse(BaseModel):
     id: str
     email: str
     role: str
     auth_provider: str
     has_password: bool
+    email_verified: bool
 
 
 class ChangePasswordRequest(BaseModel):
