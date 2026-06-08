@@ -18,4 +18,4 @@ RUN chmod +x entrypoint.sh
 
 EXPOSE 8000
 
-CMD ["./entrypoint.sh"]
+RUN chmod +x entrypoint.sh worker_entrypoint.sh beat_entrypoint.sh
