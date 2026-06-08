@@ -15,3 +15,7 @@ google-genai
 redis
 python-dotenv
 structlog
+celery
+celery[redis]
+mailtrap
+jinja2
