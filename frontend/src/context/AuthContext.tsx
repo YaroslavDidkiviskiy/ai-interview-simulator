@@ -6,6 +6,9 @@ export interface User {
   id: string
   email: string
   role: string
+  auth_provider: 'local' | 'google' | 'github'
+  has_password: boolean
+  email_verified: boolean
 }
 
 interface AuthContextType {
@@ -14,6 +17,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>
   register: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
+  refreshUser: () => Promise<void>
   isLoading: boolean
 }
 
@@ -31,7 +35,6 @@ function getOAuthTokenFromCookie(): string | null {
   const match = document.cookie.match(/(?:^|;\s*)oauth_access_token=([^;]*)/)
   if (!match) return null
   const token = decodeURIComponent(match[1])
-  // одразу очищаємо cookie — токен переїжджає в localStorage
   document.cookie = 'oauth_access_token=; max-age=0; path=/'
   return token
 }
@@ -39,7 +42,6 @@ function getOAuthTokenFromCookie(): string | null {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [token, setToken] = useState<string | null>(() => {
-    // спочатку перевіряємо OAuth cookie (після редіректу від Google/GitHub)
     const oauthToken = getOAuthTokenFromCookie()
     if (oauthToken) {
       localStorage.setItem('access_token', oauthToken)
@@ -72,6 +74,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
     return () => { cancelled = true }
   }, [])
+
+  async function refreshUser() {
+    const t = localStorage.getItem('access_token')
+    if (!t) return
+    const res = await fetch(`${API_BASE}/api/users/me`, {
+      headers: { Authorization: `Bearer ${t}` },
+    })
+    if (res.ok) setUser(await res.json())
+  }
 
   async function login(email: string, password: string) {
     const form = new URLSearchParams()
@@ -124,7 +135,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, token, login, register, logout, refreshUser, isLoading }}>
       {children}
     </AuthContext.Provider>
   )
