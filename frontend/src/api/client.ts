@@ -166,12 +166,24 @@ export function changePassword(current_password: string, new_password: string): 
   })
 }
 
+export function sendVerificationCode(): Promise<{ ok: boolean }> {
+  return request('/users/me/send-verification-code', { method: 'POST' })
+}
+
+export function verifyEmail(code: string): Promise<{ ok: boolean }> {
+  return request('/users/me/verify-email', {
+    method: 'POST',
+    body: JSON.stringify({ code }),
+  })
+}
+
 export interface Me {
   id: string
   email: string
   role: string
   auth_provider: 'local' | 'google' | 'github'
   has_password: boolean
+  email_verified: boolean
 }
 
 export function getMe(): Promise<Me> {
