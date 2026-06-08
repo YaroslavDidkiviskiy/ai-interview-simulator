@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from app.db import get_db
 from app.auth.security import verify_password, hash_password
 from app.rate_limiter import rate_limit_send_verification_code
-from app.schemas.user import ChangePasswordRequest, SetPasswordRequest, VerifyCodeRequest
+from app.schemas.user import ChangePasswordRequest, SetPasswordRequest, VerifyCodeRequest, DeleteAccountRequest
 from app.models.feedback import Feedback
 from app.models.question import Question
 from app.models.session import InterviewSession
@@ -14,8 +14,8 @@ from app.schemas.user import MeResponse
 from app.schemas.session import SessionRead
 from app.auth.dependencies import get_current_user, require_verified_email
 from app.auth.models import User
-from app.repositories.email_verification import EmailVerificationRepository, get_email_verification_repo
-from app.tasks.email_tasks import send_verification_email
+from app.repositories.email_verification import EmailVerificationRepository, get_email_verification_repo, get_account_delete_verification_repo
+from app.tasks.email_tasks import send_verification_email, send_delete_verification_email
 from app.logging import get_logger
 
 
@@ -116,6 +116,43 @@ async def verify_email(
     await repo.delete_code(current_user.id)
 
     logger.info("email_verified", user_id=current_user.id)
+    return {"ok": True}
+
+
+@router.post("/me/send-delete-account-verification")
+async def send_delete_verification_code(
+    current_user: User = Depends(get_current_user),
+    repo: EmailVerificationRepository = Depends(get_account_delete_verification_repo),
+):
+    code = repo.generate_code()
+    await repo.save_code(current_user.id, code)
+    send_delete_verification_email.delay(current_user.email, code)
+
+    logger.info("delete_verification_code_sent", user_id=current_user.id)
+    return {"ok": True}
+
+
+@router.post("/me/delete-account")
+async def delete_account(
+    body: DeleteAccountRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+    repo: EmailVerificationRepository = Depends(get_account_delete_verification_repo),
+):
+    stored_code = await repo.get_code(current_user.id)
+    if not stored_code:
+        raise HTTPException(
+            status_code=400,
+            detail="Code expired or not found. Request a new one",
+        )
+    if stored_code != body.code:
+        raise HTTPException(status_code=400, detail="Invalid code")
+
+    await repo.delete_code(current_user.id)
+    await db.delete(current_user)
+    await db.commit()
+
+    logger.info("account_deleted", user_id=current_user.id)
     return {"ok": True}
 
 
