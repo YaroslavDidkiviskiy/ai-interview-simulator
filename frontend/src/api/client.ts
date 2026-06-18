@@ -196,3 +196,14 @@ export function setPassword(password: string): Promise<{ ok: boolean }> {
     body: JSON.stringify({ password }),
   })
 }
+
+export function sendDeleteAccountCode(): Promise<{ ok: boolean }> {
+  return request('/users/me/send-delete-account-verification', { method: 'POST' })
+}
+
+export function deleteAccount(code: string): Promise<{ ok: boolean }> {
+  return request('/users/me/delete-account', {
+    method: 'POST',
+    body: JSON.stringify({ code }),
+  })
+}

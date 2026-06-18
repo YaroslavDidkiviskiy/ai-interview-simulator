@@ -26,7 +26,7 @@ class MeResponse(BaseModel):
 
 
 class DeleteAccountRequest(BaseModel):
-    password: str | None = None
+    code: str
 
 
 class ChangePasswordRequest(BaseModel):
