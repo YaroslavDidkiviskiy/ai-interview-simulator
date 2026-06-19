@@ -13,13 +13,13 @@ from app.models.session import InterviewSession
 from app.schemas.feedback import FeedbackRead
 from app.schemas.session import QuestionRead, SessionCreateSchema, SessionDetailRead, SessionRead
 from app.services.interview_engine import InterviewEngine
+from app.rate_limiter import rate_limit_sessions
 
 router = APIRouter(prefix="/api/sessions", tags=["sessions"])
 
 logger = get_logger(__name__)
 
-
-@router.post("/", response_model=SessionRead, status_code=201)
+@router.post("/", response_model=SessionRead, dependencies=[Depends(rate_limit_sessions)], status_code=201)
 async def create_session(
     session_data: SessionCreateSchema,
     db: AsyncSession = Depends(get_db),
